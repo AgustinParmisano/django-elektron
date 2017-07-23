@@ -11,7 +11,7 @@ class DeviceSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    snippets = serializers.PrimaryKeyRelatedField(many=True, queryset=Device.objects.all())
+    devices = serializers.PrimaryKeyRelatedField(many=True, queryset=Device.objects.all())
 
     class Meta:
         model = User

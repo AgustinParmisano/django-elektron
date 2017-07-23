@@ -39,9 +39,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'rest_framework',
-    'snippets.apps.SnippetsConfig',
     'devices.apps.DevicesConfig',
 ]
+
+REST_FRAMEWORK = {
+    'PAGE_SIZE': 10
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

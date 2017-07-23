@@ -1,12 +1,15 @@
-from django.conf.urls import url
-from rest_framework.urlpatterns import format_suffix_patterns
+from django.conf.urls import url, include
 from devices import views
+from rest_framework.routers import DefaultRouter
 
+# Create a router and register our viewsets with it.
+router = DefaultRouter()
+router.register(r'devices', views.DeviceViewSet)
+router.register(r'users', views.UserViewSet)
+
+# The API URLs are now determined automatically by the router.
+# Additionally, we include the login URLs for the browsable API.
 urlpatterns = [
-    url(r'^devices/$', views.DeviceList.as_view()),
-    url(r'^devices/(?P<pk>[0-9]+)/$', views.DeviceDetail.as_view()),
-    url(r'^users/$', views.UserList.as_view()),
-    url(r'^users/(?P<pk>[0-9]+)/$', views.UserDetail.as_view()),
+    url(r'^', include(router.urls)),
+    url(r'^api-auth/', include('rest_framework.urls', namespace='devices'))
 ]
-
-urlpatterns = format_suffix_patterns(urlpatterns)
