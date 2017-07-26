@@ -9,7 +9,7 @@ class Device(models.Model):
     label = models.CharField(max_length=100, blank=True, default='Elektron')
     state = models.CharField(max_length=100, blank=True, default='Off')
     measure = models.CharField(max_length=100, blank=True, default='') #measure puede ser un objeto en sí mismo
-    owner = models.ForeignKey('auth.User', related_name='devices', on_delete=models.CASCADE)
+    #owner = models.ForeignKey('auth.User', related_name='devices', on_delete=models.CASCADE)
 
     class Meta:
         ordering = ('created',)

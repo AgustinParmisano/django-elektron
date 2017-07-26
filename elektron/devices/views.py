@@ -6,7 +6,7 @@ from devices.serializers import DeviceSerializer, UserSerializer
 from rest_framework import generics
 from django.contrib.auth.models import User
 from rest_framework import permissions
-from devices.permissions import IsOwnerOrReadOnly
+from devices.permissions import IsOwnerOrReadOnly, IsDeviceOrNothing
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
@@ -29,11 +29,16 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = UserSerializer
 
 class DeviceViewSet(viewsets.ModelViewSet):
-
+    lookup_field = "device_ip"
     queryset = Device.objects.all()
     serializer_class = DeviceSerializer
+
+    """
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,
                           IsOwnerOrReadOnly,)
+    """
+
+    permission_classes = (IsDeviceOrNothing,)
 
     """
     @detail_route(renderer_classes=[renderers.StaticHTMLRenderer])
@@ -42,5 +47,5 @@ class DeviceViewSet(viewsets.ModelViewSet):
         return Response(device.highlighted)
     """
 
-    def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+    #def perform_create(self, serializer):
+    #    serializer.save(owner=self.request.user)
