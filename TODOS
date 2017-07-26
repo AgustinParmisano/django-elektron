@@ -1,0 +1,17 @@
+Modelo:
+  Datos:
+  - Crear app para los datos
+  - Hacer Modelo Dato y vincularla con los Devices 1aN (Device tiene muchos datos - C/Dato es un 1 Device).
+  - Hacer que Mqtt cree Datos por POST.
+  - Hacer que cuando se crea un dato se consulta por la IP o ID del Device que le pertenece para
+    vincularlo en la bd.
+  Estadísticas:
+  - Ver cómo hacer las estadísticas, si otra app o qué.
+  - Vincularla con los datos.
+  - Ver cómo cruzar todo para tener estadísticas por Device, consumo y Datetime.
+
+MQTT:
+  - Hacer que sea ordenado el envío y recepción de los datos por POST.
+
+WEBSOCKET:
+  - Tener solucionadas las urls de respuesta para websocket desde angular.
