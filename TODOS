@@ -15,3 +15,10 @@ MQTT:
 
 WEBSOCKET:
   - Tener solucionadas las urls de respuesta para websocket desde angular.
+
+LOGIN y AUTENTICACIÓN:
+  - Qué onda desde websocket o ajax con angular
+  - Encriptación?
+  - Tokens?
+  - Cookies?
+  - Oauth?
