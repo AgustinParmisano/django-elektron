@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'devices.apps.DevicesConfig',
+    'data.apps.DataConfig',
 ]
 
 REST_FRAMEWORK = {
