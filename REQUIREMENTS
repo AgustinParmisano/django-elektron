@@ -25,14 +25,16 @@ Modelo de Clases:
 	-state (String, enviado por dispositivo)
 
 -Data:
-	-id (autogenerado por django)
+	-id (PK, autogenerado por django)
 	-device (Device, FK N-1, enviado por dispositivo)
-	-data (Sring (JSON), enviado por dispositivo)
-	-date (Datetime, seteado por el sistema al guardar el dato)
+	-data_value (Sring (JSON), enviado por dispositivo)
+	-date (Datetime, enviado por MQTT al recibir el dato desde la cola Rabbitmq o POST)
 
--Programa:
-        -id (autogenerado por django)
+-Tarea (Task):
+        -id (PK, autogenerado por django)
 	-device (Device, FK N-N, configurado por el usuario)
 	-date_from (Datetime, puede ser null, configurado por el usuario)
 	-date_to (Datetime, puede ser null, configurado por el usuario)
 	-max (Integer, puede ser null, configurado por el ususrio)
+	-state (String, arranca en null, va pasando de estados, puede ser un state: ready, done, canceled)
+
