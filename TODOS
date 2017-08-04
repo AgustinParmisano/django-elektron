@@ -10,15 +10,19 @@ Modelo:
   - Vincularla con los datos.
   - Ver cómo cruzar todo para tener estadísticas por Device, consumo y Datetime.
 
+BD:
+  -Ver si hacer sqlite, sql, postgre o mongodb.
+
 MQTT:
-  - Hacer que sea ordenado el envío y recepción de los datos por POST.
+  - Hacer que sea ordenado el envío y recepción de los datos por POST O POR RABBITMQ.
 
 WEBSOCKET:
-  - Tener solucionadas las urls de respuesta para websocket desde angular.
+  - Tener solucionadas las urls (permisos) de respuesta para websocket desde angular.
 
 LOGIN y AUTENTICACIÓN:
-  - Qué onda desde websocket o ajax con angular
+  - Una autenticación por ruta en Ionic
+  - Un token de sesión validado desde el server
+  - Qué onda desde websocket o ajax con angular, el token va a ser validado siempre que se haga algo (url POST/GET)
   - Encriptación?
-  - Tokens?
-  - Cookies?
-  - Oauth?
+  - Cookies? En principio no se puede 
+  - Cómo crear cosas pero que pida permisos?
