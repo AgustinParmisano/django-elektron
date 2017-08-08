@@ -19,6 +19,7 @@ from devices import views as device_views
 from data import views as data_views
 from tasks import views as task_views
 from rest_framework.routers import DefaultRouter
+from rest_framework.schemas import get_schema_view
 
 # Create a router and register our viewsets with it.
 router = DefaultRouter()
@@ -27,38 +28,12 @@ router.register(r'users', device_views.UserViewSet)
 router.register(r'data', data_views.DataViewSet)
 router.register(r'tasks', task_views.TaskViewSet)
 
-# The API URLs are now determined automatically by the router.
-# Additionally, we include the login URLs for the browsable API.
-urlpatterns = [
-    url(r'^', include(router.urls)),
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
-]
-"""
-from django.conf.urls import url, include
-from django.contrib import admin
-
-from django.conf.urls import url, include
-from devices import views
-from data import views
-from tasks import views
-from rest_framework.routers import DefaultRouter
-
-# Create a router and register our viewsets with it.
-router = DefaultRouter()
-router.register(r'devices', views.DeviceViewSet)
-router.register(r'users', views.UserViewSet)
-router.register(r'data', views.DataViewSet)
-router.register(r'tasks', views.TasksViewSet)
-
+schema_view = get_schema_view(title='Pastebin API')
 
 # The API URLs are now determined automatically by the router.
 # Additionally, we include the login URLs for the browsable API.
 urlpatterns = [
     url(r'^', include(router.urls)),
-    url(r'^admin/', admin.site.urls),
-    url(r'^', include('devices.urls')),
-    url(r'^', include('tasks.urls')),
-    url(r'^', include('data.urls')),
-    url(r'^api-auth/', include('rest_framework.urls', namespace='elektron')),
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^schema/$', schema_view),
 ]
-"""

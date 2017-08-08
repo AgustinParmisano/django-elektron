@@ -1,5 +1,6 @@
 import paho.mqtt.client as mqtt
 import time
+import datetime
 import json
 import requests
 
@@ -38,7 +39,8 @@ def on_message_device(client, userdata, msg):
    list = json.loads(msg.payload)
    data_json = {}
    print list
-   r = requests.post("http://localhost:8000/devices/", data={'device_ip': "12524", 'label': 'issue', 'state': 'on', 'measure':'100'})
+   r = requests.get("http://localhost:8000/data/", data={'device': "3"})
+   r = requests.post("http://localhost:8000/data/", data={'device': "3", 'date': datetime.datetime.now(), 'data_value':'150'})
    print("REQUEST (POST): ")
    print r
    print(r.status_code, r.reason)

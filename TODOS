@@ -1,8 +1,10 @@
 Modelo:
   Datos:
-  - Hacer que Mqtt cree Datos por POST.
+  - Hacer que haya detail de Device, Data y Task cuando se consulta su url específica
+    Ejempplo: http http://localhost:8000/data/2/
+  - Hacer que Mqtt cree Data por POST (según Device anteriormente consultado por GET)
   - Hacer que cuando se crea un dato se consulta por la IP o ID del Device que le pertenece para
-    vincularlo en la bd.
+    vincularlo en la bd (es lo anterior, supuestamente)
   Estadísticas:
   - Ver cómo hacer las estadísticas, si otra app o consultar directamente a la BD.
   - Vincularla con los datos.

@@ -12,6 +12,7 @@ from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework import viewsets
 from rest_framework.decorators import detail_route
+from rest_framework.renderers import JSONRenderer as renderers
 
 @api_view(['GET'])
 def api_root(request, format=None):
@@ -33,12 +34,6 @@ class DataViewSet(viewsets.ModelViewSet):
 
     permission_classes = (IsDataOrNothing,)
 
-    """
-    @detail_route(renderer_classes=[renderers.StaticHTMLRenderer])
-    def highlight(self, request, *args, **kwargs):
-        device = self.get_object()
-        return Response(device.highlighted)
-    """
 
     #def perform_create(self, serializer):
     #    serializer.save(owner=self.request.user)
