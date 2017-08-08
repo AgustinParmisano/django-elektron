@@ -37,6 +37,7 @@ def on_message_device(client, userdata, msg):
 
    list = json.loads(msg.payload)
    data_json = {}
+   print list
    r = requests.post("http://localhost:8000/devices/", data={'device_ip': "12524", 'label': 'issue', 'state': 'on', 'measure':'100'})
    print("REQUEST (POST): ")
    print r

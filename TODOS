@@ -1,12 +1,10 @@
 Modelo:
   Datos:
-  - Crear app para los datos
-  - Hacer Modelo Dato y vincularla con los Devices 1aN (Device tiene muchos datos - C/Dato es un 1 Device).
   - Hacer que Mqtt cree Datos por POST.
   - Hacer que cuando se crea un dato se consulta por la IP o ID del Device que le pertenece para
     vincularlo en la bd.
   Estadísticas:
-  - Ver cómo hacer las estadísticas, si otra app o qué.
+  - Ver cómo hacer las estadísticas, si otra app o consultar directamente a la BD.
   - Vincularla con los datos.
   - Ver cómo cruzar todo para tener estadísticas por Device, consumo y Datetime.
 
@@ -24,5 +22,11 @@ LOGIN y AUTENTICACIÓN:
   - Un token de sesión validado desde el server
   - Qué onda desde websocket o ajax con angular, el token va a ser validado siempre que se haga algo (url POST/GET)
   - Encriptación?
-  - Cookies? En principio no se puede 
+  - Cookies? En principio no se puede
   - Cómo crear cosas pero que pida permisos?
+
+
+INTERFAZ:
+  - Sección de Estadísticas
+  - Sección de Programación (Tareas / Tasks)
+  - Login / Autenticación - Ver como resolver lo del Token

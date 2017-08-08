@@ -33,12 +33,12 @@ class DeviceViewSet(viewsets.ModelViewSet):
     queryset = Device.objects.all()
     serializer_class = DeviceSerializer
 
-    """
+
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,
                           IsOwnerOrReadOnly,)
-    """
 
-    permission_classes = (IsDeviceOrNothing,)
+
+    #permission_classes = (IsDeviceOrNothing,)
 
     """
     @detail_route(renderer_classes=[renderers.StaticHTMLRenderer])
@@ -47,5 +47,5 @@ class DeviceViewSet(viewsets.ModelViewSet):
         return Response(device.highlighted)
     """
 
-    #def perform_create(self, serializer):
-    #    serializer.save(owner=self.request.user)
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)

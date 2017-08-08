@@ -9,10 +9,17 @@ class Device(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     label = models.CharField(max_length=100, blank=True, default='Elektron')
     state = models.CharField(max_length=100, blank=True, default='Off')
-    #owner = models.ForeignKey('auth.User', related_name='devices', on_delete=models.CASCADE)
+    owner = models.ForeignKey('auth.User', related_name='devices', on_delete=models.CASCADE)
 
     class Meta:
         ordering = ('created',)
+
+    def __unicode__(self):
+        if self.label == "Elektron":
+            name = device_ip
+        else:
+            name = self.label
+        return name
 
     def save(self, *args, **kwargs):
         """
