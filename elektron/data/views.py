@@ -33,7 +33,17 @@ class DataViewSet(viewsets.ModelViewSet):
     """
 
     permission_classes = (IsDataOrNothing,)
+    """
+    @detail_route(renderer_classes=[renderers.StaticHTMLRenderer])
+    def highlight(self, request, *args, **kwargs):
+        snippet = self.get_object()
+        return Response(snippet.highlighted)
 
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+    """
 
-    #def perform_create(self, serializer):
-    #    serializer.save(owner=self.request.user)
+    @detail_route(methods=['get'])
+    def get_data(self, request, pk=None):
+        print request.data
+        return request.data

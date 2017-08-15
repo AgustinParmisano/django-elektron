@@ -5,7 +5,8 @@ from django.contrib.auth.models import User
 
 class DeviceSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
-    #data = serializers.PrimaryKeyRelatedField(many=True, queryset=Data.objects.all())
+    #highlight = serializers.HyperlinkedIdentityField(view_name='device-highlight', format='html')
+    data = serializers.HyperlinkedIdentityField(view_name='device-data', format='html')
 
     class Meta:
         model = Device

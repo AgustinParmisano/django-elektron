@@ -12,6 +12,7 @@ from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework import viewsets
 from rest_framework.decorators import detail_route
+from rest_framework import renderers
 
 @api_view(['GET'])
 def api_root(request, format=None):
@@ -29,7 +30,7 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = UserSerializer
 
 class DeviceViewSet(viewsets.ModelViewSet):
-    lookup_field = "device_ip"
+    #lookup_field = "device_ip"
     queryset = Device.objects.all()
     serializer_class = DeviceSerializer
 
@@ -40,12 +41,13 @@ class DeviceViewSet(viewsets.ModelViewSet):
 
     #permission_classes = (IsDeviceOrNothing,)
 
-    """
+
     @detail_route(renderer_classes=[renderers.StaticHTMLRenderer])
-    def highlight(self, request, *args, **kwargs):
+    def data(self, request, *args, **kwargs):
+        queryset = Data.objects.all()
         device = self.get_object()
-        return Response(device.highlighted)
-    """
+        return Response(device)
+
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
