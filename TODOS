@@ -1,8 +1,9 @@
 Modelo:
   Datos:
-  - Hacer que haya detail de Device, Data y Task cuando se consulta su url específica (sin lo de highlight)
+  - Hacer que haya detail de Data y Task cuando se consulta su url específica 
     Ejemplo: http http://localhost:8000/data/2/
-  - Hacer que una consulta tipo http://localhost:8000/device/2/data me devuelva todos los objetos data de ese device.
+  - Hacer que una consulta tipo http://localhost:8000/device/2/data me devuelva todos los objetos data de ese device
+    Tiene que retornar la vista serializada de data (o una lista de jsons del objeto data) sólo para ese device elegido en la url.
   - Hacer lo mismo de arriba pero ver cómo hacer con un datetime inicio y un datetime fin (recibidos por POST).
   - Hacer que Mqtt cree Data por POST (según Device anteriormente consultado por GET)
   - Hacer que cuando se crea un dato se consulta por la IP o ID del Device que le pertenece para

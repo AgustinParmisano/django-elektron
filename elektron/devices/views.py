@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from devices.models import Device
+from data.models import Data
 from devices.serializers import DeviceSerializer, UserSerializer
 from rest_framework import generics
 from django.contrib.auth.models import User
@@ -46,8 +47,9 @@ class DeviceViewSet(viewsets.ModelViewSet):
     def data(self, request, *args, **kwargs):
         queryset = Data.objects.all()
         device = self.get_object()
-        return Response(device)
+        queryset.filter(device = device)
 
+        return Response(queryset)
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)

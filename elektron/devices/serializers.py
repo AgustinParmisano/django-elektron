@@ -10,7 +10,7 @@ class DeviceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Device
-        fields = ('id', 'device_ip', 'device_mac', 'created', 'label', 'state', 'owner')#, 'data')
+        fields = ('id', 'device_ip', 'device_mac', 'created', 'label', 'state', 'owner', 'data')
 
 
 class UserSerializer(serializers.ModelSerializer):
