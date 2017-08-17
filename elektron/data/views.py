@@ -13,17 +13,18 @@ from rest_framework.reverse import reverse
 from rest_framework import viewsets
 from rest_framework.decorators import detail_route
 from rest_framework.renderers import JSONRenderer as renderers
+from rest_framework import renderers
 
 @api_view(['GET'])
 def api_root(request, format=None):
     return Response({
         'users': reverse('user-list', request=request, format=format),
-        'data': reverse('device-list', request=request, format=format)
+        'data': reverse('data-list', request=request, format=format)
     })
 
 
 class DataViewSet(viewsets.ModelViewSet):
-    lookup_field = "data_value"
+    #lookup_field = "data_value"
     queryset = Data.objects.all()
     serializer_class = DataSerializer
 
@@ -43,7 +44,13 @@ class DataViewSet(viewsets.ModelViewSet):
         serializer.save(owner=self.request.user)
     """
 
-    @detail_route(methods=['get'])
-    def get_data(self, request, pk=None):
-        print request.data
-        return request.data
+    @detail_route(renderer_classes=[renderers.StaticHTMLRenderer])
+    def device(self, request, *args, **kwargs):
+        queryset = Device.objects.all()
+        device = self.get_object()
+        queryset.filter(device = device)
+
+        return Response(queryset)
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)

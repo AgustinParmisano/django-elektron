@@ -12,7 +12,6 @@ class DeviceSerializer(serializers.ModelSerializer):
         model = Device
         fields = ('id', 'device_ip', 'device_mac', 'created', 'label', 'state', 'owner', 'data')
 
-
 class UserSerializer(serializers.ModelSerializer):
     devices = serializers.PrimaryKeyRelatedField(many=True, queryset=Device.objects.all())
 

@@ -14,7 +14,10 @@ Modelo:
   - Ver cómo cruzar todo para tener estadísticas por Device, consumo y Datetime.
 
 BD:
-  -Ver si hacer sqlite, sql, postgre o mongodb.
+ -Hacer un script para entrar a phppgmyadmin de una
+ -Har un script para buscar devices y data en postgre 
+ -Ver si hacer sqlite, sql, postgre o mongodb.
+ 
 
 MQTT:
   - Hacer que sea ordenado el envío y recepción de los datos por POST O POR RABBITMQ.
