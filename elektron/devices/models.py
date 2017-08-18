@@ -15,11 +15,8 @@ class Device(models.Model):
         ordering = ('created',)
 
     def __unicode__(self):
-        if self.label == "Elektron":
-            name = device_ip
-        else:
-            name = self.label
-        return name
+        return self.label
+
 
     def save(self, *args, **kwargs):
         super(Device, self).save(*args, **kwargs)

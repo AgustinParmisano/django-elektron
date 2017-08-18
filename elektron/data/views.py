@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from data.models import Data
+from devices.models import Device
 from data.serializers import DataSerializer
 from rest_framework import generics
 from django.contrib.auth.models import User
@@ -14,6 +15,14 @@ from rest_framework import viewsets
 from rest_framework.decorators import detail_route
 from rest_framework.renderers import JSONRenderer as renderers
 from rest_framework import renderers
+from django.utils.six import BytesIO
+from rest_framework.parsers import JSONParser
+import json
+import datetime
+
+def myconverter(o):
+    if isinstance(o, datetime.datetime):
+        return o.__str__()
 
 @api_view(['GET'])
 def api_root(request, format=None):
@@ -44,13 +53,18 @@ class DataViewSet(viewsets.ModelViewSet):
         serializer.save(owner=self.request.user)
     """
 
-    @detail_route(renderer_classes=[renderers.StaticHTMLRenderer])
+    @detail_route(renderer_classes=[renderers.StaticHTMLRenderer, renderers.JSONRenderer])
     def device(self, request, *args, **kwargs):
         queryset = Device.objects.all()
-        device = self.get_object()
-        queryset.filter(device = device)
+        data = self.request.query_params.get('data', self.get_object())
 
-        return Response(queryset)
+        if data is not None:
+            device = queryset.filter(data=data)[0]
+
+        device_json = device.__dict__
+        device_json['created'] = device_json['created']
+
+        return Response(json.dumps(device_json, default = myconverter))
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)

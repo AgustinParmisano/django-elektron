@@ -14,6 +14,12 @@ from rest_framework.reverse import reverse
 from rest_framework import viewsets
 from rest_framework.decorators import detail_route
 from rest_framework import renderers
+import json
+import datetime
+
+def myconverter(o):
+    if isinstance(o, datetime.datetime):
+        return o.__str__()
 
 @api_view(['GET'])
 def api_root(request, format=None):
@@ -43,13 +49,24 @@ class DeviceViewSet(viewsets.ModelViewSet):
     #permission_classes = (IsDeviceOrNothing,)
 
 
-    @detail_route(renderer_classes=[renderers.StaticHTMLRenderer])
+    @detail_route(renderer_classes=[renderers.StaticHTMLRenderer, renderers.JSONRenderer])
     def data(self, request, *args, **kwargs):
         queryset = Data.objects.all()
-        device = self.get_object()
-        queryset.filter(device = device)
+        device = self.request.query_params.get('device', self.get_object())
+        print device
 
-        return Response(queryset)
+        if device is not None:
+            data_list_query = queryset.filter(device=device)
+
+        data_list = []
+
+        for data in data_list_query:
+            data_json = data.__dict__
+            data_json['date'] = data_json['date']
+            data_list.append(data_json)
+
+        return Response(json.dumps(data_list, default = myconverter))
+
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
