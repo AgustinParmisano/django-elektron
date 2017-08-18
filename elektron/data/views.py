@@ -43,15 +43,6 @@ class DataViewSet(viewsets.ModelViewSet):
     """
 
     permission_classes = (IsDataOrNothing,)
-    """
-    @detail_route(renderer_classes=[renderers.StaticHTMLRenderer])
-    def highlight(self, request, *args, **kwargs):
-        snippet = self.get_object()
-        return Response(snippet.highlighted)
-
-    def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
-    """
 
     @detail_route(renderer_classes=[renderers.StaticHTMLRenderer, renderers.JSONRenderer])
     def device(self, request, *args, **kwargs):

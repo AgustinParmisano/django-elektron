@@ -1,6 +1,8 @@
 Modelo:
   Datos:
-  - Hacer que haya detail de Data y Task cuando se consulta su url específica 
+  - Hacer el detail de Task cuando se consulta su url específica.
+  - Ver si se puede borrar Task a través de su detail de arriba.
+  - Hacer que haya detail de Task cuando se consulta su url específica 
     Ejemplo: http http://localhost:8000/data/2/
   - Obtener datos a partir de datetime inicio y un datetime fin (recibidos por POST).
   - Hacer que Mqtt cree Data por POST (según Device anteriormente consultado por GET)

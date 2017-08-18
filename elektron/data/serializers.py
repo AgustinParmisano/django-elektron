@@ -4,12 +4,12 @@ from devices.models import Device
 from django.contrib.auth.models import User
 
 class DataSerializer(serializers.ModelSerializer):
-    #device = serializers.ReadOnlyField(source='device.id')
+    data_detail = serializers.HyperlinkedIdentityField(view_name='data-detail', format='html')
     device_detail = serializers.HyperlinkedIdentityField(view_name='data-device', format='html')
 
     class Meta:
         model = Data
-        fields = ('id', 'data_value', 'date', 'device', 'device_detail')
+        fields = ('id', 'data_detail','data_value', 'date', 'device', 'device_detail')
 
 class DeviceSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
