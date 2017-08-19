@@ -1,5 +1,6 @@
 Modelo:
   Datos:
+  - Ponerle label o nombre a tasks y descripción
   - Hacer el detail de Task cuando se consulta su url específica.
   - Ver si se puede borrar Task a través de su detail de arriba.
   - Hacer que haya detail de Task cuando se consulta su url específica 
