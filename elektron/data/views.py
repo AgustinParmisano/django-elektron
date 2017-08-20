@@ -15,7 +15,6 @@ from rest_framework import viewsets
 from rest_framework.decorators import detail_route
 from rest_framework.renderers import JSONRenderer as renderers
 from rest_framework import renderers
-from django.utils.six import BytesIO
 from rest_framework.parsers import JSONParser
 import json
 import datetime
