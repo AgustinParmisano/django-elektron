@@ -5,7 +5,6 @@ from rest_framework.routers import DefaultRouter
 # Create a router and register our viewsets with it.
 router = DefaultRouter()
 router.register(r'tasks', views.TaskViewSet)
-router.register(r'taskstates', views.TaskStateViewSet)
 router.register(r'users', views.UserViewSet)
 
 # The API URLs are now determined automatically by the router.

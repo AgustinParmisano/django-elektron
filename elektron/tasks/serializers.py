@@ -1,17 +1,27 @@
 from rest_framework import serializers
-from tasks.models import Task, TaskState
+from tasks.models import Task, DateTimeTask, DataTask, TaskState, TaskFunction
 from devices.models import Device
 from django.contrib.auth.models import User
 
 class TaskSerializer(serializers.ModelSerializer):
-    task_detail = serializers.HyperlinkedIdentityField(view_name='task-detail', format='html')
-    device_detail = serializers.HyperlinkedIdentityField(view_name='task-device', format='html')
     owner = Device.owner
-    state = serializers.HyperlinkedIdentityField(view_name='task-state', format='html')
+
+class DateTimeTaskSerializer(TaskSerializer):
+    datetimetask_detail = serializers.HyperlinkedIdentityField(view_name='datetimetask-detail', format='html')
+    device_detail = serializers.HyperlinkedIdentityField(view_name='datetimetask-device', format='html')
 
     class Meta:
-        model = Task
-        fields = ('id',  'label', 'task_detail', 'created', 'device', 'device_detail', 'state',  'owner', 'alert_options')
+        model = DateTimeTask
+        fields = ('id',  'label', 'datetimetask_detail', 'created', 'device', 'device_detail', 'date_from', 'date_to' ,'taskstate',  'owner', 'taskfunction')
+
+class DataTaskSerializer(TaskSerializer):
+    datatask_detail = serializers.HyperlinkedIdentityField(view_name='datatask-detail', format='html')
+    device_detail = serializers.HyperlinkedIdentityField(view_name='datatask-device', format='html')
+
+    class Meta:
+        model = DataTask
+        fields = ('id',  'label', 'datatask_detail', 'created', 'device', 'device_detail', 'data_value' ,'taskstate',  'owner', 'taskfunction')
+
 
 class DeviceSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
@@ -20,15 +30,23 @@ class DeviceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Device
-        fields = ('id', 'device_ip', 'device_mac', 'created', 'label', 'state', 'owner', 'data')
+        fields = ('id', 'device_ip', 'device_mac', 'created', 'label', 'devicestate', 'owner', 'data')
 
 class TaskStateSerializer(serializers.ModelSerializer):
-    taskstate_detail = serializers.HyperlinkedIdentityField(view_name='taskstate-detail', format='html')
+    task_state_detail = serializers.HyperlinkedIdentityField(view_name='taskstate-detail', format='html')
     task = serializers.HyperlinkedIdentityField(view_name='taskstate-task', format='html')
 
     class Meta:
         model = TaskState
-        fields = ('id', 'name', 'description', 'task', 'taskstate_detail')
+        fields = ('id', 'name', 'description', 'task', 'task_state_detail')
+
+class TaskFunctionSerializer(serializers.ModelSerializer):
+    task_function_detail = serializers.HyperlinkedIdentityField(view_name='taskfunction-detail', format='html')
+    task = serializers.HyperlinkedIdentityField(view_name='taskfunction-task', format='html')
+
+    class Meta:
+        model = TaskFunction
+        fields = ('id', 'name', 'description', 'task', 'task_function_detail')
 
 
 class UserSerializer(serializers.ModelSerializer):

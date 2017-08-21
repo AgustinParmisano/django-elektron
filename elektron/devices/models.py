@@ -22,7 +22,7 @@ class Device(models.Model):
     device_mac = models.CharField(max_length=100, blank=True, default='0')
     created = models.DateTimeField(auto_now_add=True)
     label = models.CharField(max_length=100, blank=True, default='Elektron')
-    state = models.ForeignKey(DeviceState)
+    devicestate = models.ForeignKey(DeviceState)
     owner = models.ForeignKey('auth.User', related_name='devices', on_delete=models.CASCADE)
 
     class Meta:

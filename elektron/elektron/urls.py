@@ -27,8 +27,11 @@ router.register(r'devices', device_views.DeviceViewSet)
 router.register(r'devicestates', device_views.DeviceStateViewSet)
 router.register(r'users', device_views.UserViewSet)
 router.register(r'data', data_views.DataViewSet)
-router.register(r'tasks', task_views.TaskViewSet)
+#router.register(r'tasks', task_views.TaskViewSet)
+router.register(r'datetimetasks', task_views.DateTimeTaskViewSet)
+router.register(r'datatasks', task_views.DataTaskViewSet)
 router.register(r'taskstates', task_views.TaskStateViewSet)
+router.register(r'taskfunction', task_views.TaskFunctionViewSet)
 
 
 schema_view = get_schema_view(title='Pastebin API')

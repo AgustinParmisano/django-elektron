@@ -97,7 +97,7 @@ class DeviceStateViewSet(viewsets.ModelViewSet):
 
         for device in device_list_query:
             device_json = device.__dict__
-            device_json['date'] = device_json['date']
+            #device_json['date'] = device_json['date']
             device_list.append(device_json)
 
         return Response(json.dumps(device_list, default = myconverter))
