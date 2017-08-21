@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from tasks.models import Task
+from tasks.models import Task, TaskState
 from devices.models import Device
 from django.contrib.auth.models import User
 
@@ -7,6 +7,7 @@ class TaskSerializer(serializers.ModelSerializer):
     task_detail = serializers.HyperlinkedIdentityField(view_name='task-detail', format='html')
     device_detail = serializers.HyperlinkedIdentityField(view_name='task-device', format='html')
     owner = Device.owner
+    state = serializers.HyperlinkedIdentityField(view_name='task-state', format='html')
 
     class Meta:
         model = Task
@@ -20,6 +21,15 @@ class DeviceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Device
         fields = ('id', 'device_ip', 'device_mac', 'created', 'label', 'state', 'owner', 'data')
+
+class TaskStateSerializer(serializers.ModelSerializer):
+    taskstate_detail = serializers.HyperlinkedIdentityField(view_name='taskstate-detail', format='html')
+    task = serializers.HyperlinkedIdentityField(view_name='taskstate-task', format='html')
+
+    class Meta:
+        model = TaskState
+        fields = ('id', 'name', 'description', 'task', 'taskstate_detail')
+
 
 class UserSerializer(serializers.ModelSerializer):
     tasks = serializers.PrimaryKeyRelatedField(many=True, queryset=Task.objects.all())

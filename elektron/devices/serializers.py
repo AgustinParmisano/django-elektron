@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from devices.models import Device
+from devices.models import Device, DeviceState
 from data.models import Data
 from django.contrib.auth.models import User
 
@@ -11,6 +11,15 @@ class DeviceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Device
         fields = ('id', 'device_detail', 'device_ip', 'device_mac', 'created', 'label', 'state', 'owner', 'data')
+
+class DeviceStateSerializer(serializers.ModelSerializer):
+    device_state_detail = serializers.HyperlinkedIdentityField(view_name='devicestate-detail', format='html')
+    device = serializers.HyperlinkedIdentityField(view_name='devicestate-device', format='html')
+
+    class Meta:
+        model = DeviceState
+        fields = ('id', 'name', 'device_state_detail', 'description', 'device')
+
 
 class UserSerializer(serializers.ModelSerializer):
     devices = serializers.PrimaryKeyRelatedField(many=True, queryset=Device.objects.all())

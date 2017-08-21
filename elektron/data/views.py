@@ -57,4 +57,4 @@ class DataViewSet(viewsets.ModelViewSet):
         return Response(json.dumps(device_json, default = myconverter))
 
     def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+        serializer.save()

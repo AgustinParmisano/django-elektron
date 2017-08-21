@@ -1,6 +1,7 @@
 ## Modelo:
   ### Datos:
-  - Hacer Clase DeviceState y TaskState
+  - Ver que funcionen todas las urls.
+  - Hacer que con DeviceState y TaskState muestre los Devices y los Tasks en ese estado
   - Hacer Clase AlertOptions y poner sus posibilidades
   - Obtener datos a partir de datetime inicio y un datetime fin (recibidos por POST).
   - Hacer que Mqtt cree Data por POST (según Device anteriormente consultado por GET)

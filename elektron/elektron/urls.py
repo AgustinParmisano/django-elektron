@@ -24,9 +24,12 @@ from rest_framework.schemas import get_schema_view
 # Create a router and register our viewsets with it.
 router = DefaultRouter()
 router.register(r'devices', device_views.DeviceViewSet)
+router.register(r'devicestates', device_views.DeviceStateViewSet)
 router.register(r'users', device_views.UserViewSet)
 router.register(r'data', data_views.DataViewSet)
 router.register(r'tasks', task_views.TaskViewSet)
+router.register(r'taskstates', task_views.TaskStateViewSet)
+
 
 schema_view = get_schema_view(title='Pastebin API')
 
