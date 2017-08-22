@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 
 import os
 
+import tornado_websockets
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -25,7 +27,7 @@ SECRET_KEY = 'sm+qr237j==e4b@u+(wm7qhgk!(u&%ehcus4^mz#*nxrnm085)'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*'] # SECURITY WARNING: beware of allowed hosts!
 
 
 # Application definition
@@ -42,6 +44,8 @@ INSTALLED_APPS = [
     'devices.apps.DevicesConfig',
     'data.apps.DataConfig',
     'tasks.apps.TasksConfig',
+
+    'tornado_websockets',
 ]
 
 REST_FRAMEWORK = {
@@ -131,3 +135,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# At the end of settings.py file
+TORNADO = {
+    'port': 8888,    # 8000 by default
+    'handlers': [  tornado_websockets.django_app(),],
+    'settings': {},  # {} by default
+}

@@ -1,13 +1,15 @@
 ## Modelo:
   ### Datos:
   - Ver que en la TaskState no muestra los detalles del task bien porque no está jerarquizado bien el TaskState
-    Por ejemplo: TaskState de DataTask, el detalle del Task no muestra el data_value (Preguntar a Adán)
-  - Poner permisos de owner o admin a TaskState, DeviceState y TaskFunctions
-  - Obtener datos a partir de datetime inicio y un datetime fin (recibidos por POST, mezclar con Tom).
   - Hacer que Mqtt cree Data por POST (según Device anteriormente consultado por GET)
   - Hacer que cuando se crea un dato se consulta por la IP o ID del Device que le pertenece para
     vincularlo en la bd (es lo anterior, supuestamente)
+  - Obtener datos a partir de datetime inicio y un datetime fin (recibidos por POST, mezclar con Tom).
   - Ver que funcionen todas las urls.
+  - Poner permisos de owner o admin a TaskState, DeviceState y TaskFunctions (detalle)
+  - Hacer andar websocket para que reciba y devuelva datos (ver que recibe y que devuelve)
+    Por ejemplo: TaskState de DataTask, el detalle del Task no muestra el data_value (Preguntar a Adán)
+
  
   ### Estadísticas:
   - Ver cómo hacer las estadísticas, si otra app o consultar directamente a la BD.
