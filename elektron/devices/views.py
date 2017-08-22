@@ -77,13 +77,10 @@ class DeviceStateViewSet(viewsets.ModelViewSet):
     queryset = DeviceState.objects.all()
     serializer_class = DeviceStateSerializer
 
-
     #permission_classes = (permissions.IsAuthenticatedOrReadOnly,
     #                      IsOwnerOrReadOnly,)
 
-
     permission_classes = (IsDeviceStateOrNothing,)
-
 
     @detail_route(renderer_classes=[renderers.StaticHTMLRenderer, renderers.JSONRenderer])
     def device(self, request, *args, **kwargs):

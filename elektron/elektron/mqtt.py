@@ -2,6 +2,7 @@ import paho.mqtt.client as mqtt
 import time
 import datetime
 import json
+import ast
 import requests
 
 def on_connect(client, userdata, flags, rc):
@@ -9,7 +10,7 @@ def on_connect(client, userdata, flags, rc):
 
    # Subscribing in on_connect() means that if we lose the connection and
    # reconnect then subscriptions will be renewed.
-   client.subscribe("sensors/new_sensor")
+   #client.subscribe("sensors/new_sensor")
    client.subscribe("sensors/new_data")
 
 
@@ -36,16 +37,40 @@ def on_publish(mosq, obj, mid):
 def on_message_device(client, userdata, msg):
    print(msg.topic+" "+str(msg.payload))
 
-   list = json.loads(msg.payload)
+   llist = json.loads(msg.payload)
    data_json = {}
-   print list
-   r = requests.get("http://localhost:8000/data/", data={'device': "3"})
-   r = requests.post("http://localhost:8000/data/", data={'device': "3", 'date': datetime.datetime.now(), 'data_value':'150'})
+   print "LLLLLLLLLLLLLLLLLL"
+   print type(llist)
+
+   devices_request = requests.get("http://localhost:8000/devices/?format=json")
+
    print("REQUEST (POST): ")
-   print r
-   print(r.status_code, r.reason)
-   print("RESPUESTA AL REQUEST:")
-   print(r.text[:255] + '...')
+   print devices_request
+   print(devices_request.status_code, devices_request.reason)
+
+   devices_json = json.loads(devices_request.text)
+
+
+   print("RESPUESTA AL REQUEST (JSON):")
+   print(devices_json)
+
+   #print(ast.parse(devices_json, mode='eval'))
+   #print ast.literal_eval(str(devices_json))
+   print "total_devices"
+   total_devices = devices_json["count"]
+
+   devices = devices_json["results"]
+   for device in devices:
+       print device
+       print "device mac"
+       print device["device_mac"]
+       #if
+
+
+   #r = requests.get("http://localhost:8000/data/", data={'device': "3"})
+   #r = requests.post("http://localhost:8000/data/", data={'device': "3", 'date': datetime.datetime.now(), 'data_value':'150'})
+
+
 
 class MqttClient(object):
     """docstring for MqttClient."""
