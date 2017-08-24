@@ -16,6 +16,28 @@ from rest_framework.decorators import detail_route
 from rest_framework import renderers
 import json
 import datetime
+from tornado_websockets.websocket import WebSocket
+
+ws_echo = WebSocket('/echo')
+
+@ws_echo.on
+def open(socket):
+    # Notify all clients about a new connection
+    ws_echo.emit('new_connection')
+
+@ws_echo.on
+def message(socket, data):
+    # Reply to the client
+    socket.emit('message', data)
+
+    # Wow we got a spammer, let's inform the first client :^)
+    if 'spam' in data.message:
+        # wow
+        ws_echo[0].emit('got_spam', {
+            'message': data.get('message'),
+            'socket': socket
+        })
+
 
 def myconverter(o):
     if isinstance(o, datetime.datetime):

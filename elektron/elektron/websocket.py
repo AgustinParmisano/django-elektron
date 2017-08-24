@@ -1,24 +1,58 @@
-from tornado_websockets.websocket import WebSocket
-
-tws = WebSocket('/echo')
-
-# Listen the « message » event
-@tws.on
-def message(socket, data):
-    socket.emit('new_message', {
-        'message': data.get('message')
-})
-
-"""
 import tornado
 import tornado.websocket
 from tornado import gen
+from datetime import timedelta
 import datetime, sys, time
 import ast
 import json
 import random
-from datetime import timedelta
+import datetime
+import paho.mqtt.client as mqtt
+import time
+import requests
+import Queue
 
+q = Queue.Queue()
+
+def on_connect(client, userdata, flags, rc):
+   print("Connected with result code "+str(rc))
+
+   # Subscribing in on_connect() means that if we lose the connection and
+   # reconnect then subscriptions will be renewed.
+   #client.subscribe("sensors/new_sensor")
+   client.subscribe("data_to_web")
+
+def on_message(client, userdata, msg):
+   #print(msg.topic+" "+str(msg.payload))
+   print "Sending data from MQTT(Device) to WebSocket(Web Interface)"
+   data_json = ast.literal_eval(msg.payload)
+   print data_json
+
+   q.put(data_json)
+
+
+class MqttClient(object):
+    """docstring for MqttClient."""
+    def __init__(self, client=mqtt.Client()):
+        super(MqttClient, self).__init__()
+        self.client = client
+        self.client.on_connect = on_connect
+        self.client.on_message = on_message
+        self.client.connect("localhost", 1883, 60)
+
+    def get_client(self):
+        return self.client
+
+    def set_on_connect(self, func):
+        self.on_connect = func
+
+    def publish(message, topic):
+         print("Sending %s " % (message))
+         publish.single(str(topic), message, hostname="localhost")
+         return "Sending msg: %d " % (message)
+
+mqtt = MqttClient()
+mqtt.client.loop_start()
 
 
 #Websockets clients
@@ -38,25 +72,34 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
         clients.append(self)
         tornado.ioloop.IOLoop.instance().add_timeout(timedelta(seconds=1), self.test)
 
-    @gen.coroutine
     def test(self):
         try:
-            n = random.randint(0,100)
-            message = {"data": n}
+            #n = random.randint(0,100)
+            #message = {"data": n}
+            message = str(q.get())
+            message = ast.literal_eval(json.dumps(message))
+            message = ast.literal_eval(message)
+            print type(message)
+            msg = {}
+            msg["device_ip"] = message["device_ip"]
+            msg["mac"] = message["mac"]
+            msg["data"] = message["data"]
+            message = msg
+            print type(message)
+            print "Sending device message to WebInterface"
+            print message
+
             try:
                 time.sleep(1)
                 self.write_message(message)
             except Exception as e:
                 print "Exception in test write message: "
                 print e
-                #raise(e)
+                raise(e)
         except Exception as e:
             print "Exception in test write message 2: "
             print e
-            self.write_message("Es un write message exeption:" + str(e))
-            #raise(e)
-        else:
-            tornado.ioloop.IOLoop.instance().add_timeout(timedelta(seconds=0.1), self.test)
+            raise(e)
 
     # the client sent the message
     def on_message(self, message):
@@ -89,4 +132,3 @@ print("Opening port 8888")
 socket.listen(8888)
 
 tornado.ioloop.IOLoop.instance().start()
-"""

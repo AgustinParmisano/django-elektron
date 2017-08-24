@@ -17,15 +17,21 @@
 
   <body class="nav-md">
     <h1>Websocket Client Side Test</h1>
-
+    <script src="../elektron/dtws-client/examples/js/twstornadowebsocket-es6.js
+"></script>
     <script>
     var json;
     //Web Socket comunication
     //Connect to server
-    var ws = new WebSocket("ws://localhost:8888/test");
+
+
+    var ws = new WebSocket("ws://localhost:8888/websocket");
+
+
     //console.log(ws);
     //Open the socket and say hi
     ws.onopen = function() {
+      console.log("onopen");
       ws.send("Hello, world");
     };
     //Receive message form server
@@ -33,6 +39,8 @@
       json = JSON.parse(evt.data);
       console.log(json);
     };
+
+
     </script>
   </body>
 </html>

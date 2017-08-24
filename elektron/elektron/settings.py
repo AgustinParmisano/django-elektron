@@ -45,7 +45,6 @@ INSTALLED_APPS = [
     'data.apps.DataConfig',
     'tasks.apps.TasksConfig',
 
-    'tornado_websockets',
 ]
 
 REST_FRAMEWORK = {
@@ -135,10 +134,3 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
-
-# At the end of settings.py file
-TORNADO = {
-    'port': 8888,    # 8000 by default
-    'handlers': [  tornado_websockets.django_app(),],
-    'settings': {},  # {} by default
-}
