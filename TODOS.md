@@ -1,5 +1,8 @@
 ## Modelo:
   ### Datos:
+  - Para hacer que mqtt pueda tirar un post a rest para crear un device nuevo o para crear un dato o editar algo, hay que ver lo de los permisos externos
+  - Ver lo de permisos para mqtt (solo post desde python, alguna clave o algo que tengan los devices al enviar sus datos desde nodemcu )
+  - Ver como crear datos con permisos con un POST a una URL de djangorest o con la COREAPI
   - Hacer que cuando llega un dato de un device por mqtt consulte si existe, si no existe, lo crea con un flag en False (dado de alto por user)
   - Hacer que los devices que tienen el flag dado de alto por user en True pueden enviar datos a webscoket y al mimso tiempo se almacenen en django
   - Hacer que Mqtt cree Data por POST (según Device anteriormente consultado por GET)

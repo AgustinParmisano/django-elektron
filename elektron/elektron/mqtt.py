@@ -10,6 +10,10 @@ def msg_ws(msg):
    resp = publish.single("data_to_web", msg, hostname="localhost")
    return resp
 
+def create_new_device(device_mqtt):
+    print("Creating new device in server")
+    r = requests.post("http://localhost:8000/data/", data={'device': "3", 'date': datetime.datetime.now(), 'data_value':'150'})
+
 def check_device(device_mqtt):
     device_ok = False
     devices_request = requests.get("http://localhost:8000/devices/?format=json")
@@ -21,18 +25,26 @@ def check_device(device_mqtt):
 
     #print "total_devices"
     total_devices = devices_json["count"]
+    device_mqtt = ast.literal_eval(str(device_mqtt))
 
     devices = devices_json["results"]
+    #print type(device_mqtt)
 
+    if len(devices) == 0:
+        print "No devices"
     for device in devices:
         #print device
         #print "device mac"
         #print device["device_mac"]
-        if (device["device_mac"] == device_mqtt["mac"]):
+        if (device["device_mac"] == device_mqtt["device_mac"]):
             device_ok = device_mqtt
+            return device_ok
 
-    return device_ok
-
+    if device_ok == False:
+        #device not found, create it
+        new_device = create_new_device(device_mqtt)
+        if new_device != False:
+            return new_device
 
 def on_connect(client, userdata, flags, rc):
    print("Connected with result code "+str(rc))
@@ -46,10 +58,10 @@ def on_connect(client, userdata, flags, rc):
 def on_message_device(client, userdata, msg):
    print(msg.topic+" "+str(msg.payload))
 
-   mqtt_data = json.loads(msg.payload)
+   mqtt_data = ast.literal_eval(str(msg.payload)) #json.loads(str(msg.payload))
    print "mqtt_data"
    print mqtt_data
-
+   print type(mqtt_data)
    device_ok = check_device(mqtt_data)
 
    if device_ok != False:
