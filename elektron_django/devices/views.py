@@ -59,7 +59,6 @@ class DetailView(generic.DetailView):
 class RecognitionView(generic.View):
 
     def post(self, request):
-        print request
         return JsonResponse({'status':True})
 
 class CreateView(generic.View):
@@ -69,7 +68,6 @@ class CreateView(generic.View):
         result = check_device(**request.POST)
 
         if result:
-            print type(result["device_mac"])
             try:
                 device = Device.objects.get(device_mac=result["device_mac"])
                 device.device_ip = result["device_ip"]

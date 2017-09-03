@@ -33,12 +33,11 @@ def create_new_device(device_mqtt):
 
     r = requests.post("http://localhost:8000/devices/", data=device_data)
 
+def check_data(mqtt_data):
+    result = requests.post("http://localhost:8000/data/create", data=mqtt_data)
+    return result
+
 def check_device(device_mqtt):
-    device_ok = False
-
-    print "device_mqtt"
-    print device_mqtt
-
     result = requests.post("http://localhost:8000/devices/create", data=device_mqtt)
     return result
 
@@ -67,6 +66,9 @@ def on_message_device(client, userdata, msg):
         mqtt_data = ast.literal_eval(json.dumps(mqtt_data))
         message = str(mqtt_data)
         msg_ws(message)
+        mqtt_data = check_data(mqtt_data)
+
+
 
 """
 def on_message(client, userdata, msg):
