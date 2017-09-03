@@ -1,10 +1,11 @@
 # TODOS Django Elektron:
 
 ## Model:
-	- Crear los modelos de las otras apps, data y tasks.
-	- Crear las vistar y las urls de cada modelo.
+	- Ver problema de duplicados
+	- Crear los modelos de tasks.
+	- Crear las vistas y las urls de cada modelo.
 	- Lograr urls para cada modelo para obtenr todos los datos en formato json.
-	- Lograr post y get para crear datos para cada modelo.
+	- Lograr post y get para crear.editar y borrar datos para cada modelo.
 	- Lograr todo lo anterior pero con authenticación.
 
 ## Login:
@@ -12,8 +13,8 @@
 
 
 ## MQTT:
-	- Integrar con el MQTT que tenía Django Rest.
-	- Porbar crear devices y data desde MQTT simulando los nodemcu con mqtt_pub(jsondata).
+	- Ver lo de los duplicados
+	- Falta la vuelta desde el server a mqtt
 	- Ver seguridad MD5 salt en nodemcu y en el server.
 
 ## Websocket:

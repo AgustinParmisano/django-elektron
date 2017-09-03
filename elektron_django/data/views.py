@@ -5,36 +5,51 @@ import datetime
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.template import loader
-from .models import Data
+from .models import Data, Device, DeviceState
 from django.views import generic
 from django.contrib.auth.models import User
 
-def check_device(device):
+def check_device(**kwargs):
+
+    if not 'device_ip' in kwargs:
+        return False
+    else:
+        if type(kwargs['device_ip']) is list:
+            kwargs['device_ip'] = kwargs['device_ip'][0]
+
+    if not 'device_mac' in kwargs:
+        return False
+    else:
+        if type(kwargs['device_mac']) is list:
+            kwargs['device_mac'] = kwargs['device_mac'][0]
+
+    if not 'label' in kwargs:
+        return False
+    else:
+        if type(kwargs['label']) is list:
+            kwargs['label'] = kwargs['label'][0]
+
     try:
-        device_object = Device.objects.get(device)
-    except Device.DoesNotExist:
-        print "Device does not Exist!"
-    return device_object
+        kwargs['devicestate'] = DeviceState.objects.get(id=kwargs['devicestate'])
+    except Exception as e:
+        #TODO: create default devicestates in settings.py
+        kwargs['devicestate'] = DeviceState.objects.get(name="off")
+
+    try:
+        kwargs['owner'] = User.objects.get(username=kwargs['owner'])
+    except Exception as e:
+        #TODO: create default user in settings.py
+        kwargs['owner'] = User.objects.get(username="root")
+
+    return kwargs
 
 def check_data(**kwargs):
 
-    if not 'data_value' in kwargs:
+    if not 'data' in kwargs:
         return False
     else:
-        if type(kwargs['data_value']) is list:
-            kwargs['data_value'] = kwargs['data_value'][0]
-
-    if not 'date' in kwargs:
-        return False
-    else:
-        if type(kwargs['date']) is list:
-            kwargs['date'] = kwargs['date'][0]
-
-    try:
-        kwargs['device'] = Device.objects.get(username=kwargs['device'])
-    except Exception as e:
-        #TODO: create default user in settings.py
-        kwargs['device'] = Device.objects.get(username="unknown")
+        if type(kwargs['data']) is list:
+            kwargs['data'] = kwargs['data'][0]
 
     return kwargs
 
@@ -44,27 +59,33 @@ class IndexView(generic.ListView):
 
     def get_queryset(self):
         """Return the last five published devicess."""
-        return Data.objects.order_by('-created')[:5]
+        return Data.objects.order_by('-date')[:5]
 
 class DetailView(generic.DetailView):
     model = Data
     template_name = 'data_detail.html'
 
 class CreateView(generic.View):
-    data = Data()
+
 
     def post(self, request, *args, **kwargs):
+        data = Data()
+        result = check_device(**request.POST)
 
-        result = check_data(**request.POST)
+        try:
+            device = Device.objects.get(device_mac=result["device_mac"])
+        except Device.DoesNotExist:
+            device = Device(**result)
+            device.save()
 
-        if result:
+        device_enabled = device.enabled
 
-            device_ok = check_device(result["device"])
-
-            if device_ok != None:
-                data.data_value = result["data_value"]
-                data.device = device_ok
-                data.datedevicestate = datetime.datetime.now() #TODO: Device sends real datetime
+        if device_enabled:
+            result = check_data(**request.POST)
+            if result:
+                data.data_value = result["data"]
+                data.device = device
+                data.date = datetime.datetime.now() #TODO: Device sends real datetime
                 data.save()
 
         return JsonResponse({'status':True})

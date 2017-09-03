@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models
-from devices.models import Device
+from devices.models import Device, DeviceState
 
 # Create your models here.
 

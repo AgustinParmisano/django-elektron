@@ -10,15 +10,17 @@ import Queue
 qmsg = Queue.Queue()
 
 def remove_duplicated_msg(mqtt_data):
+    print  "mqtt_data"
+    print  mqtt_data
+
     if qmsg.qsize() > 10:
         qmsg.get()
 
     if mqtt_data != None and mqtt_data != "" and mqtt_data not in qmsg.queue:
-        mqtt_data
         qmsg.put(mqtt_data)
         del mqtt_data["data_id"]
 
-    return mqtt_data
+        return mqtt_data
 
 def msg_ws(msg):
    resp = publish.single("data_to_web", msg, hostname="localhost")
@@ -34,6 +36,7 @@ def create_new_device(device_mqtt):
     r = requests.post("http://localhost:8000/devices/", data=device_data)
 
 def check_data(mqtt_data):
+    print "AAAAAAAAAAAAAA"
     result = requests.post("http://localhost:8000/data/create", data=mqtt_data)
     return result
 
