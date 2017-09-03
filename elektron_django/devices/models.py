@@ -25,6 +25,7 @@ class Device(models.Model):
     label = models.CharField(max_length=100, blank=True, default='Elektron')
     devicestate = models.ForeignKey(DeviceState)
     owner = models.ForeignKey('auth.User', related_name='devices', on_delete=models.CASCADE)
+    enabled = models.BooleanField(default=False)
 
     class Meta:
         ordering = ('created',)
