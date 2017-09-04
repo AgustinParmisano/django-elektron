@@ -17,7 +17,9 @@ def remove_duplicated_msg(mqtt_data):
         qmsg.get()
 
     if mqtt_data != None and mqtt_data != "" and mqtt_data not in qmsg.queue:
+        print "CCCCCCC"
         qmsg.put(mqtt_data)
+        qmsg.get()
         del mqtt_data["data_id"]
 
         return mqtt_data
@@ -36,7 +38,6 @@ def create_new_device(device_mqtt):
     r = requests.post("http://localhost:8000/devices/", data=device_data)
 
 def check_data(mqtt_data):
-    print "AAAAAAAAAAAAAA"
     result = requests.post("http://localhost:8000/data/create", data=mqtt_data)
     return result
 
@@ -53,6 +54,7 @@ def on_connect(client, userdata, flags, rc):
    client.subscribe("sensors/new_data")
 
 
+data_list = []
 def on_message_device(client, userdata, msg):
    #print(msg.topic+" "+str(msg.payload))
 
@@ -61,7 +63,7 @@ def on_message_device(client, userdata, msg):
    #print mqtt_data
    #print type(mqtt_data)
 
-   mqtt_data = remove_duplicated_msg(mqtt_data)
+   mqtt_data # = remove_duplicated_msg(mqtt_data)
 
    device_ok = check_device(mqtt_data)
 
@@ -113,3 +115,9 @@ class MqttClient(object):
          print("Sending %s " % (message))
          publish.single(str(topic), message, hostname="localhost")
          return "Sending msg: %d " % (message)
+
+if __name__ == "__main__":
+    print "Starting MQTT"
+    mqtt = MqttClient()
+    #mqtt.client.loop_start()
+    mqtt.client.loop_forever()

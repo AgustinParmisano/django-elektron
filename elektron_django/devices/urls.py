@@ -9,4 +9,5 @@ urlpatterns = [
     url(r'^(?P<pk>[0-9]+)/$', views.DetailView.as_view(), name='detail'),
     url(r'^recognition$', views.RecognitionView.as_view(), name='recognition'),
     url(r'^create$', csrf_exempt(views.CreateView.as_view()), name='create'),
+    url(r'^data$', csrf_exempt(views.DeviceDataView.as_view()), name='data'),
 ]

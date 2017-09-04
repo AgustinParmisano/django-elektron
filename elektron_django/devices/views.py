@@ -6,6 +6,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.template import loader
 from .models import Device, DeviceState
+from data.models import Data
 from django.views import generic
 from django.contrib.auth.models import User
 
@@ -43,6 +44,16 @@ def check_device(**kwargs):
 
     return kwargs
 
+def check_device_mac(**kwargs):
+    if not 'device_mac' in kwargs:
+        return False
+    else:
+        if type(kwargs['device_mac']) is list:
+            kwargs['device_mac'] = kwargs['device_mac'][0]
+
+    return kwargs
+
+
 class IndexView(generic.ListView):
     template_name = 'devices_index.html'
     context_object_name = 'latest_devices_list'
@@ -55,6 +66,47 @@ class DetailView(generic.DetailView):
     model = Device
     template_name = 'devices_detail.html'
 
+
+class DeviceDataView(generic.DetailView):
+    model = Device
+    #template_name = 'device_data.html'
+
+    def get(self, request, *args, **kwargs):
+        print "GETDATA"
+        print request.GET
+        return JsonResponse({'status':True})
+
+    def post(self, request, *args, **kwargs):
+        device = Device()
+
+        result = check_device_mac(**request.POST)
+
+        if result:
+            try:
+                device = Device.objects.get(device_mac=result["device_mac"])
+
+            except Exception as e:
+                print  "Device you ask does not exist"
+                print "Exception: " + str(e)
+                return HttpResponse(status=500)
+
+            if device:
+                try:
+                    data_list = []
+                    data_query = Data.objects.all().filter(device=device)
+                    data_query = list(data_query)
+
+                    for data in data_query:
+                        #print data
+                        data_list.insert(0,data.data_value)
+
+                    #print data_list
+                    return JsonResponse({'data': data_list})
+
+                except Exception as e:
+                    print "Some error ocurred getting Device Data"
+                    print "Exception: " + str(e)
+                    return HttpResponse(status=500)
 
 class RecognitionView(generic.View):
 

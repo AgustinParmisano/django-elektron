@@ -2,6 +2,8 @@
 from __future__ import unicode_literals
 
 from django.db import models
+#from data.models import Data
+
 
 # Create your models here.
 class DeviceState(models.Model):

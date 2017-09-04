@@ -16,7 +16,7 @@ class Data(models.Model):
 
     def __unicode__(self):
         name = self.data_value
-        return name + ","
+        return name
 
     def save(self, *args, **kwargs):
         super(Data, self).save(*args, **kwargs)

@@ -5,7 +5,8 @@ import datetime
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.template import loader
-from .models import Data, Device, DeviceState
+from devices.models import Device, DeviceState
+from .models import Data
 from django.views import generic
 from django.contrib.auth.models import User
 
@@ -67,25 +68,25 @@ class DetailView(generic.DetailView):
 
 class CreateView(generic.View):
 
-
     def post(self, request, *args, **kwargs):
         data = Data()
+        #print request.POST
         result = check_device(**request.POST)
 
-        try:
-            device = Device.objects.get(device_mac=result["device_mac"])
-        except Device.DoesNotExist:
-            device = Device(**result)
-            device.save()
+        if result:
+            try:
+                device = Device.objects.get(device_mac=result["device_mac"])
+            except Device.DoesNotExist:
+                device = Device(**result)
+                device.save()
 
-        device_enabled = device.enabled
-
-        if device_enabled:
-            result = check_data(**request.POST)
-            if result:
-                data.data_value = result["data"]
-                data.device = device
-                data.date = datetime.datetime.now() #TODO: Device sends real datetime
-                data.save()
+            device_enabled = device.enabled
+            if device_enabled:
+                result = check_data(**request.POST)
+                if result:
+                    data.data_value = result["data"]
+                    data.device = device
+                    data.date = datetime.datetime.now() #TODO: Device sends real datetime
+                    data.save()
 
         return JsonResponse({'status':True})
