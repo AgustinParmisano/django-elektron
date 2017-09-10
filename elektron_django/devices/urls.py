@@ -10,4 +10,5 @@ urlpatterns = [
     url(r'^recognition$', views.RecognitionView.as_view(), name='recognition'),
     url(r'^create$', csrf_exempt(views.CreateView.as_view()), name='create'),
     url(r'^data$', csrf_exempt(views.DeviceDataView.as_view()), name='data'),
+    url(r'^task$', csrf_exempt(views.DeviceTaskView.as_view()), name='task'),
 ]

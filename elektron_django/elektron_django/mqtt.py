@@ -17,7 +17,6 @@ def remove_duplicated_msg(mqtt_data):
         qmsg.get()
 
     if mqtt_data != None and mqtt_data != "" and mqtt_data not in qmsg.queue:
-        print "CCCCCCC"
         qmsg.put(mqtt_data)
         qmsg.get()
         del mqtt_data["data_id"]

@@ -55,17 +55,16 @@ def check_device_mac(**kwargs):
 
 
 class IndexView(generic.ListView):
-    template_name = 'devices_index.html'
+    template_name = 'devices/index.html'
     context_object_name = 'latest_devices_list'
 
     def get_queryset(self):
-        """Return the last five published devicess."""
+        """Return the last five published devices."""
         return Device.objects.order_by('-created')[:5]
 
 class DetailView(generic.DetailView):
     model = Device
-    template_name = 'devices_detail.html'
-
+    template_name = 'devices/devices_detail.html'
 
 class DeviceDataView(generic.DetailView):
     model = Device
@@ -105,6 +104,47 @@ class DeviceDataView(generic.DetailView):
 
                 except Exception as e:
                     print "Some error ocurred getting Device Data"
+                    print "Exception: " + str(e)
+                    return HttpResponse(status=500)
+
+class DeviceTaskView(generic.DetailView):
+    model = Device
+    #template_name = 'device_data.html'
+
+    def get(self, request, *args, **kwargs):
+        print "GETDATA"
+        print request.GET
+        return JsonResponse({'status':True})
+
+    def post(self, request, *args, **kwargs):
+        device = Device()
+
+        result = check_device_mac(**request.POST)
+
+        if result:
+            try:
+                device = Device.objects.get(device_mac=result["device_mac"])
+
+            except Exception as e:
+                print  "Device you ask does not exist"
+                print "Exception: " + str(e)
+                return HttpResponse(status=500)
+
+            if device:
+                try:
+                    task_list = []
+                    task_query = Task.objects.all().filter(device=device)
+                    task_query = list(task_query)
+
+                    for task in task_query:
+                        #print task
+                        task_list.insert(0,task.task_value)
+
+                    #print task_list
+                    return JsonResponse({'task': task_list})
+
+                except Exception as e:
+                    print "Some error ocurred getting Device Task"
                     print "Exception: " + str(e)
                     return HttpResponse(status=500)
 
