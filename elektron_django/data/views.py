@@ -86,7 +86,7 @@ class CreateView(generic.View):
                 if result:
                     data.data_value = result["data"]
                     data.device = device
-                    data.date = datetime.datetime.now() #TODO: Device sends real datetime
+                    #data.date = datetime.datetime.now() #TODO: Device sends real datetime
                     data.save()
 
         return JsonResponse({'status':True})

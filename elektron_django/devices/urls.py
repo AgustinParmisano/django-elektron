@@ -13,5 +13,5 @@ urlpatterns = [
     url(r'^task$', csrf_exempt(views.DeviceMacTaskView.as_view()), name='task_device_mac'),
     url(r'^(?P<pk>[0-9]+)/data$', csrf_exempt(views.DeviceDataView.as_view()), name='data'),
     url(r'^(?P<pk>[0-9]+)/tasks$', csrf_exempt(views.DeviceTaskView.as_view()), name='task'),
-    url(r'^(?P<pk>[0-9]+)/data/(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})/$', csrf_exempt(views.DeviceDataDatesView.as_view()), name='data_dates'),
+    url(r'^(?P<pk>[0-9]+)/data/(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})/$', csrf_exempt(views.DeviceDataDateView.as_view()), name='data_date'),
 ]

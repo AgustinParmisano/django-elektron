@@ -8,7 +8,7 @@ from devices.models import Device, DeviceState
 
 class Data(models.Model):
     data_value = models.CharField(max_length=100, blank=True, default='0')
-    date = models.DateTimeField(default='0')
+    date = models.DateTimeField(auto_now_add=True)
     device = models.ForeignKey(Device)
 
     class Meta:

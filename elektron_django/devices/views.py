@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import dateutil.parser as dp
 import datetime
+from django.utils import timezone
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.template import loader
@@ -9,6 +11,7 @@ from .models import Device, DeviceState
 from data.models import Data
 from django.views import generic
 from django.contrib.auth.models import User
+
 
 def check_device(**kwargs):
 
@@ -196,24 +199,32 @@ class DeviceMacTaskView(generic.DetailView):
                     print "Exception: " + str(e)
                     return HttpResponse(status=500)
 
-class DeviceDataDatesView(generic.DetailView):
+class DeviceDataDateView(generic.DetailView):
     model = Device
 
     def get(self, request, *args, **kwargs):
         print "kwargs"
         print kwargs
-        """
+
         try:
             data_list = []
             device = kwargs["pk"]
 
+            day = kwargs["day"]
+            month = kwargs["month"]
+            year = kwargs["year"]
 
-            data_query = Task.objects.all().filter(device=device)
+            date_string = day + "-" + month + "-" + year
+            #date = dp.parse(date_string, timezone.now())
+            date = datetime.datetime.strptime(date_string, "%d-%m-%Y").date()
+            print date
+            tz = timezone.now()
+            data_query = Data.objects.all().filter(device=device, date__gte=date)
             data_query = list(data_query)
 
             for data in data_query:
                 #print data
-                data_list.insert(0,data.label)
+                data_list.insert(0,data.data_value)
 
             #print data_list
             return JsonResponse({'data': data_list})
@@ -221,8 +232,8 @@ class DeviceDataDatesView(generic.DetailView):
         except Exception as e:
             print "Some error ocurred getting Device Data"
             print "Exception: " + str(e)
-            return HttpResponse(status=500)
-        """
+            raise #TODO: Remove RAISE return HttpResponse(status=500)
+
 class RecognitionView(generic.View):
 
     def post(self, request):
