@@ -68,6 +68,29 @@ class DetailView(generic.DetailView):
 
 class DeviceDataView(generic.DetailView):
     model = Device
+
+    def get(self, request, *args, **kwargs):
+
+        try:
+            data_list = []
+            device = kwargs["pk"]
+            data_query = Data.objects.all().filter(device=device)
+            data_query = list(data_query)
+
+            for data in data_query:
+                #print data
+                data_list.insert(0,data.data_value)
+
+            #print data_list
+            return JsonResponse({'data': data_list})
+
+        except Exception as e:
+            print "Some error ocurred getting Device Data"
+            print "Exception: " + str(e)
+            return HttpResponse(status=500)
+
+class DeviceMacDataView(generic.DetailView):
+    model = Device
     #template_name = 'device_data.html'
 
     def get(self, request, *args, **kwargs):
@@ -107,7 +130,32 @@ class DeviceDataView(generic.DetailView):
                     print "Exception: " + str(e)
                     return HttpResponse(status=500)
 
+
 class DeviceTaskView(generic.DetailView):
+    model = Device
+
+    def get(self, request, *args, **kwargs):
+
+        try:
+            task_list = []
+            device = kwargs["pk"]
+            task_query = Task.objects.all().filter(device=device)
+            task_query = list(task_query)
+
+            for task in task_query:
+                #print task
+                task_list.insert(0,task.label)
+
+            #print task_list
+            return JsonResponse({'task': task_list})
+
+        except Exception as e:
+            print "Some error ocurred getting Device Data"
+            print "Exception: " + str(e)
+            return HttpResponse(status=500)
+
+
+class DeviceMacTaskView(generic.DetailView):
     model = Device
     #template_name = 'device_data.html'
 
@@ -148,6 +196,33 @@ class DeviceTaskView(generic.DetailView):
                     print "Exception: " + str(e)
                     return HttpResponse(status=500)
 
+class DeviceDataDatesView(generic.DetailView):
+    model = Device
+
+    def get(self, request, *args, **kwargs):
+        print "kwargs"
+        print kwargs
+        """
+        try:
+            data_list = []
+            device = kwargs["pk"]
+
+
+            data_query = Task.objects.all().filter(device=device)
+            data_query = list(data_query)
+
+            for data in data_query:
+                #print data
+                data_list.insert(0,data.label)
+
+            #print data_list
+            return JsonResponse({'data': data_list})
+
+        except Exception as e:
+            print "Some error ocurred getting Device Data"
+            print "Exception: " + str(e)
+            return HttpResponse(status=500)
+        """
 class RecognitionView(generic.View):
 
     def post(self, request):
