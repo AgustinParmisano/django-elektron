@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 import dateutil.parser as dp
 import datetime
+from datetime import timedelta
 from django.utils import timezone
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
@@ -82,7 +83,10 @@ class DeviceDataView(generic.DetailView):
 
             for data in data_query:
                 #print data
-                data_list.insert(0,data.data_value)
+                data_dict = {}
+                data_dict["data_value"] = data.data_value
+                data_dict["data_date"] = data.date
+                data_list.insert(0,data_dict)
 
             #print data_list
             return JsonResponse({'data': data_list})
@@ -123,7 +127,10 @@ class DeviceMacDataView(generic.DetailView):
 
                     for data in data_query:
                         #print data
-                        data_list.insert(0,data.data_value)
+                        data_dict = {}
+                        data_dict["data_value"] = data.data_value
+                        data_dict["data_date"] = data.date
+                        data_list.insert(0,data_dict)
 
                     #print data_list
                     return JsonResponse({'data': data_list})
@@ -216,15 +223,18 @@ class DeviceDataDateView(generic.DetailView):
 
             date_string = day + "-" + month + "-" + year
             #date = dp.parse(date_string, timezone.now())
-            date = datetime.datetime.strptime(date_string, "%d-%m-%Y").date()
-            print date
-            tz = timezone.now()
-            data_query = Data.objects.all().filter(device=device, date__gte=date)
+            date_from = datetime.datetime.strptime(date_string, "%d-%m-%Y").date()
+            print date_from
+            date_to = date_from + timedelta(hours=24)
+            data_query = Data.objects.all().filter(device=device, date__gte=date_from, date__lte=date_to)
             data_query = list(data_query)
 
             for data in data_query:
                 #print data
-                data_list.insert(0,data.data_value)
+                data_dict = {}
+                data_dict["data_value"] = data.data_value
+                data_dict["data_date"] = data.date
+                data_list.insert(0,data_dict)
 
             #print data_list
             return JsonResponse({'data': data_list})
