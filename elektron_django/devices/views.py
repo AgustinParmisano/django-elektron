@@ -101,7 +101,7 @@ class DeviceDataView(generic.DetailView):
 
         try:
             data_list = []
-            
+
             device = kwargs["pk"]
             data_query = Data.objects.all().filter(device=device)
             data_query = list(data_query)
@@ -122,9 +122,35 @@ class DeviceMacDataView(generic.DetailView):
     #template_name = 'device_data.html'
 
     def get(self, request, *args, **kwargs):
-        print "GETDATA"
-        print request.GET
-        return JsonResponse({'status':True})
+        device = Device()
+
+        result = check_device_mac(**request.GET)
+
+        if result:
+            try:
+                device = Device.objects.get(device_mac=result["device_mac"])
+
+            except Exception as e:
+                print  "Device you ask does not exist"
+                print "Exception: " + str(e)
+                return HttpResponse(status=500)
+
+            if device:
+                try:
+                    data_list = []
+                    data_query = Data.objects.all().filter(device=device)
+                    data_query = list(data_query)
+
+                    for data in data_query:
+                        data_list.insert(0,data.serialize())
+
+                    #print data_list
+                    return JsonResponse({'data': data_list})
+
+                except Exception as e:
+                    print "Some error ocurred getting Device Data"
+                    print "Exception: " + str(e)
+                    return HttpResponse(status=500)
 
     def post(self, request, *args, **kwargs):
         device = Device()
@@ -311,7 +337,6 @@ class DeviceDataBetweenDaysView(generic.DetailView):
             date_string1 = day1 + "-" + month1 + "-" + year1
             date_string2 = day2 + "-" + month2 + "-" + year2
 
-            #date = dp.parse(date_string, timezone.now())
             date_from = datetime.datetime.strptime(date_string1, "%d-%m-%Y").date()
             date_to = datetime.datetime.strptime(date_string2, "%d-%m-%Y").date()
 
@@ -328,7 +353,6 @@ class DeviceDataBetweenDaysView(generic.DetailView):
             print "Some error ocurred getting Between Days Device Data"
             print "Exception: " + str(e)
             return HttpResponse(status=500)
-
 
 class DeviceDataHourView(generic.DetailView):
     model = Device
@@ -364,6 +388,46 @@ class DeviceDataHourView(generic.DetailView):
             print "Exception: " + str(e)
             return HttpResponse(status=500)
 
+class DeviceDataBetweenHoursView(generic.DetailView):
+    model = Device
+
+    def get(self, request, *args, **kwargs):
+
+        try:
+            data_list = []
+            device = kwargs["pk"]
+
+            day1 = kwargs["day1"]
+            month1 = kwargs["month1"]
+            year1 = kwargs["year1"]
+            hour1 = kwargs["hour1"]
+
+            day2 = kwargs["day2"]
+            month2 = kwargs["month2"]
+            year2 = kwargs["year2"]
+            hour2 = kwargs["hour2"]
+
+            datetime_string1 = day1 + "-" + month1 + "-" + year1 + " " + hour1 + ":" + "00"
+            datetime_string2 = day2 + "-" + month2 + "-" + year2 + " " + hour2 + ":" + "00"
+
+            date_from = datetime.datetime.strptime(datetime_string1, "%d-%m-%Y %H:%M")
+            date_to = datetime.datetime.strptime(datetime_string2, "%d-%m-%Y %H:%M")
+            date_from = to_localtime(date_from)
+            date_to = to_localtime(date_to)
+
+            data_query = Data.objects.all().filter(device=device, date__gte=date_from, date__lte=date_to)
+            data_query = list(data_query)
+
+            for data in data_query:
+                data_list.insert(0,data.serialize())
+
+            #print data_list
+            return JsonResponse({'data': data_list})
+
+        except Exception as e:
+            print "Some error ocurred getting Between Hours Device Data"
+            print "Exception: " + str(e)
+            return HttpResponse(status=500)
 
 class RecognitionView(generic.View):
 

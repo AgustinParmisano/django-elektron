@@ -15,14 +15,6 @@ from django.views import generic
 from django.contrib.auth.models import User
 from django.conf import settings
 
-def to_UTC(date):
-    utc = settings.UTC
-    if utc < 0:
-        date = date - timedelta(hours=abs(utc))
-    elif(utc >= 0):
-        date = date + timedelta(hours=abs(utc))
-    return date
-
 def to_localtime(date):
     utc = settings.UTC
     if utc < 0:
@@ -157,39 +149,6 @@ class DataMonthView(generic.DetailView):
             print "Exception: " + str(e)
             return HttpResponse(status=500)
 
-class DataHourView(generic.DetailView):
-    model = Data
-
-    def get(self, request, *args, **kwargs):
-
-        try:
-            data_list = []
-
-            day = kwargs["day"]
-            month = kwargs["month"]
-            year = kwargs["year"]
-            hour = kwargs["hour"]
-
-            datetime_string = day + "-" + month + "-" + year + " " + hour + ":" + "00"
-            #date = dp.parse(date_string, timezone.now())
-            date_from = datetime.datetime.strptime(datetime_string, "%d-%m-%Y %H:%M")
-            date_from = to_localtime(date_from) #TODO: Get timezone from country configured by user
-            date_to = date_from + timedelta(minutes=59)
-
-            data_query = Data.objects.all().filter(date__gte=date_from, date__lte=date_to)
-            data_query = list(data_query)
-
-            for data in data_query:
-                data_list.insert(0,data.serialize())
-
-            #print data_list
-            return JsonResponse({'data': data_list})
-
-        except Exception as e:
-            print "Some error ocurred getting Hour Data"
-            print "Exception: " + str(e)
-            return HttpResponse(status=500)
-
 class DataBetweenDaysView(generic.DetailView):
     model = Data
 
@@ -227,6 +186,78 @@ class DataBetweenDaysView(generic.DetailView):
             print "Exception: " + str(e)
             return HttpResponse(status=500)
 
+class DataHourView(generic.DetailView):
+    model = Data
+
+    def get(self, request, *args, **kwargs):
+
+        try:
+            data_list = []
+
+            day = kwargs["day"]
+            month = kwargs["month"]
+            year = kwargs["year"]
+            hour = kwargs["hour"]
+
+            datetime_string = day + "-" + month + "-" + year + " " + hour + ":" + "00"
+            #date = dp.parse(date_string, timezone.now())
+            date_from = datetime.datetime.strptime(datetime_string, "%d-%m-%Y %H:%M")
+            date_from = to_localtime(date_from) #TODO: Get timezone from country configured by user
+            date_to = date_from + timedelta(minutes=59)
+
+            data_query = Data.objects.all().filter(date__gte=date_from, date__lte=date_to)
+            data_query = list(data_query)
+
+            for data in data_query:
+                data_list.insert(0,data.serialize())
+
+            #print data_list
+            return JsonResponse({'data': data_list})
+
+        except Exception as e:
+            print "Some error ocurred getting Hour Data"
+            print "Exception: " + str(e)
+            return HttpResponse(status=500)
+
+class DataBetweenHoursView(generic.DetailView):
+    model = Data
+
+    def get(self, request, *args, **kwargs):
+
+        try:
+            data_list = []
+
+            day1 = kwargs["day1"]
+            month1 = kwargs["month1"]
+            year1 = kwargs["year1"]
+            hour1 = kwargs["hour1"]
+
+            day2 = kwargs["day2"]
+            month2 = kwargs["month2"]
+            year2 = kwargs["year2"]
+            hour2 = kwargs["hour2"]
+
+            datetime_string1 = day1 + "-" + month1 + "-" + year1 + " " + hour1 + ":" + "00"
+            datetime_string2 = day2 + "-" + month2 + "-" + year2 + " " + hour2 + ":" + "00"
+
+            date_from = datetime.datetime.strptime(datetime_string1, "%d-%m-%Y %H:%M")
+            date_to = datetime.datetime.strptime(datetime_string2, "%d-%m-%Y %H:%M")
+            date_from = to_localtime(date_from)
+            date_to = to_localtime(date_to)
+
+            data_query = Data.objects.all().filter(date__gte=date_from, date__lte=date_to)
+            data_query = list(data_query)
+
+            for data in data_query:
+                data_list.insert(0,data.serialize())
+
+            #print data_list
+            return JsonResponse({'data': data_list})
+
+        except Exception as e:
+            print "Some error ocurred getting Between Hour Data"
+            print "Exception: " + str(e)
+            return HttpResponse(status=500)
 
 class CreateView(generic.View):
 

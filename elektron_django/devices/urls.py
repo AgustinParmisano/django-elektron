@@ -17,4 +17,5 @@ urlpatterns = [
     url(r'^(?P<pk>[0-9]+)/data/(?P<month>\d{2})/(?P<year>\d{4})/$', csrf_exempt(views.DeviceDataMonthView.as_view()), name='device_data_month'),
     url(r'^(?P<pk>[0-9]+)/data/(?P<day1>\d{2})/(?P<month1>\d{2})/(?P<year1>\d{4})/(?P<day2>\d{2})/(?P<month2>\d{2})/(?P<year2>\d{4})/$', csrf_exempt(views.DeviceDataBetweenDaysView.as_view()), name='device_data_between_days'),
     url(r'^(?P<pk>[0-9]+)/data/(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})/(?P<hour>\d{2})/$', csrf_exempt(views.DeviceDataHourView.as_view()), name='device_data_hour'),
+    url(r'^(?P<pk>[0-9]+)/data/(?P<day1>\d{2})/(?P<month1>\d{2})/(?P<year1>\d{4})/(?P<hour1>\d{2})/(?P<day2>\d{2})/(?P<month2>\d{2})/(?P<year2>\d{4})/(?P<hour2>\d{2})/$', csrf_exempt(views.DeviceDataBetweenHoursView.as_view()), name='device_data_between_hours'),
 ]

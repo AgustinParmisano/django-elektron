@@ -2,10 +2,19 @@
 from __future__ import unicode_literals
 
 from django.db import models
-#from data.models import Data
-
+from datetime import timedelta
+from django.conf import settings
 
 # Create your models here.
+
+def to_UTC(date):
+    utc = settings.UTC
+    if utc < 0:
+        date = date - timedelta(hours=abs(utc))
+    elif(utc >= 0):
+        date = date + timedelta(hours=abs(utc))
+    return date
+
 class DeviceState(models.Model):
     name = models.CharField(max_length=100, blank=True, default='0')
     description = models.CharField(max_length=255, blank=True, default='')
@@ -49,7 +58,7 @@ class Device(models.Model):
             'id': self.id,
             'device_ip': self.device_ip,
             'device_mac': self.device_mac,
-            'created': self.created,
+            'created': to_UTC(self.created),
             'label': self.label,
             'devicestate': self.devicestate.serialize(),
             'enabled': self.enabled

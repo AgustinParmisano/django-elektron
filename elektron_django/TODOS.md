@@ -6,7 +6,6 @@
 
 
 ## Model:
-	- Enviar url por get con devices/device_id/data/dd/mm/yyyy/hh y que devuelva los datos para esa hora par ese device.
 	- Los dos mismos de arriba pero en rango de horas (entre hora y hora) 
 	- Que los datos devueltos en cualquier caso indiquen de que dispositivo son
 	- Solucionar la url, la view y la template para listar data y task de un device elegido por la url 
