@@ -13,5 +13,7 @@ urlpatterns = [
     url(r'^task$', csrf_exempt(views.DeviceMacTaskView.as_view()), name='task_device_mac'),
     url(r'^(?P<pk>[0-9]+)/data$', csrf_exempt(views.DeviceDataView.as_view()), name='data'),
     url(r'^(?P<pk>[0-9]+)/tasks$', csrf_exempt(views.DeviceTaskView.as_view()), name='task'),
-    url(r'^(?P<pk>[0-9]+)/data/(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})/$', csrf_exempt(views.DeviceDataDateView.as_view()), name='data_date'),
+    url(r'^(?P<pk>[0-9]+)/data/(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})/$', csrf_exempt(views.DeviceDataDayView.as_view()), name='device_data_day'),
+    url(r'^(?P<pk>[0-9]+)/data/(?P<month>\d{2})/(?P<year>\d{4})/$', csrf_exempt(views.DeviceDataMonthView.as_view()), name='device_data_month'),
+    url(r'^(?P<pk>[0-9]+)/data/(?P<day1>\d{2})/(?P<month1>\d{2})/(?P<year1>\d{4})/(?P<day2>\d{2})/(?P<month2>\d{2})/(?P<year2>\d{4})/$', csrf_exempt(views.DeviceDataBetweenDaysView.as_view()), name='device_data_between_days'),
 ]

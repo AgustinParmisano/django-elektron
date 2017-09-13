@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 import dateutil.parser as dp
 import datetime
+from calendar import monthrange
 from datetime import timedelta
 from django.utils import timezone
 from django.shortcuts import render
@@ -206,7 +207,7 @@ class DeviceMacTaskView(generic.DetailView):
                     print "Exception: " + str(e)
                     return HttpResponse(status=500)
 
-class DeviceDataDateView(generic.DetailView):
+class DeviceDataDayView(generic.DetailView):
     model = Device
 
     def get(self, request, *args, **kwargs):
@@ -240,9 +241,92 @@ class DeviceDataDateView(generic.DetailView):
             return JsonResponse({'data': data_list})
 
         except Exception as e:
-            print "Some error ocurred getting Device Data"
+            print "Some error ocurred getting Day Device Data"
             print "Exception: " + str(e)
-            raise #TODO: Remove RAISE return HttpResponse(status=500)
+            return HttpResponse(status=500)
+
+class DeviceDataMonthView(generic.DetailView):
+    model = Device
+
+    def get(self, request, *args, **kwargs):
+        print "kwargs"
+        print kwargs
+
+        try:
+            data_list = []
+            device = kwargs["pk"]
+
+            day = "1"
+            month = kwargs["month"]
+            year = kwargs["year"]
+            cant_days_month = monthrange(int(year), int(month))[1]
+
+            date_string = day + "-" + month + "-" + year
+            #date = dp.parse(date_string, timezone.now())
+            date_from = datetime.datetime.strptime(date_string, "%d-%m-%Y").date()
+            print date_from
+            date_to = date_from + timedelta(days=cant_days_month)
+            data_query = Data.objects.all().filter(device=device, date__gte=date_from, date__lte=date_to)
+            data_query = list(data_query)
+
+            for data in data_query:
+                #print data
+                data_dict = {}
+                data_dict["data_value"] = data.data_value
+                data_dict["data_date"] = data.date
+                data_list.insert(0,data_dict)
+
+            #print data_list
+            return JsonResponse({'data': data_list})
+
+        except Exception as e:
+            print "Some error ocurred getting Month Device Data"
+            print "Exception: " + str(e)
+            return HttpResponse(status=500)
+
+class DeviceDataBetweenDaysView(generic.DetailView):
+    model = Device
+
+    def get(self, request, *args, **kwargs):
+        print "kwargs"
+        print kwargs
+
+        try:
+            data_list = []
+            device = kwargs["pk"]
+
+            day1 = kwargs["day1"]
+            month1 = kwargs["month1"]
+            year1 = kwargs["year1"]
+
+            day2 = kwargs["day2"]
+            month2 = kwargs["month2"]
+            year2 = kwargs["year2"]
+
+            date_string1 = day1 + "-" + month1 + "-" + year1
+            date_string2 = day2 + "-" + month2 + "-" + year2
+
+            #date = dp.parse(date_string, timezone.now())
+            date_from = datetime.datetime.strptime(date_string1, "%d-%m-%Y").date()
+            date_to = datetime.datetime.strptime(date_string2, "%d-%m-%Y").date()
+
+            data_query = Data.objects.all().filter(device=device, date__gte=date_from, date__lte=date_to)
+            data_query = list(data_query)
+
+            for data in data_query:
+                #print data
+                data_dict = {}
+                data_dict["data_value"] = data.data_value
+                data_dict["data_date"] = data.date
+                data_list.insert(0,data_dict)
+
+            #print data_list
+            return JsonResponse({'data': data_list})
+
+        except Exception as e:
+            print "Some error ocurred getting Between Days Device Data"
+            print "Exception: " + str(e)
+            return HttpResponse(status=500)
 
 class RecognitionView(generic.View):
 
