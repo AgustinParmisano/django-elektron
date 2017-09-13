@@ -6,8 +6,6 @@
 
 
 ## Model:
-	- Los dos mismos de arriba pero en rango de horas (entre hora y hora) 
-	- Que los datos devueltos en cualquier caso indiquen de que dispositivo son
 	- Solucionar la url, la view y la template para listar data y task de un device elegido por la url 
 	- Crear las vistas (Alta, Baja, Modificación y Listar) y las urls de cada modelo.
 		- Listar: Lograr urls para cada modelo para obtener todos los datos en formato json.
