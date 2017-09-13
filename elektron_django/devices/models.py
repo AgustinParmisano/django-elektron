@@ -19,6 +19,12 @@ class DeviceState(models.Model):
     def save(self, *args, **kwargs):
         super(DeviceState, self).save(*args, **kwargs)
 
+    def serialize(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'description': self.description
+        }
 
 class Device(models.Model):
     device_ip = models.CharField(max_length=100, blank=True, default='0.0.0.0')
@@ -37,3 +43,14 @@ class Device(models.Model):
 
     def save(self, *args, **kwargs):
         super(Device, self).save(*args, **kwargs)
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'device_ip': self.device_ip,
+            'device_mac': self.device_mac,
+            'created': self.created,
+            'label': self.label,
+            'devicestate': self.devicestate.serialize(),
+            'enabled': self.enabled
+        }

@@ -20,3 +20,11 @@ class Data(models.Model):
 
     def save(self, *args, **kwargs):
         super(Data, self).save(*args, **kwargs)
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'data_value': self.data_value,
+            'date': self.date,
+            'device': self.device.serialize()
+        }

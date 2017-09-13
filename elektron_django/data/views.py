@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 import dateutil.parser as dp
 import datetime
+import pytz
 from calendar import monthrange
 from datetime import timedelta
 from django.shortcuts import render
@@ -12,6 +13,23 @@ from devices.models import Device, DeviceState
 from .models import Data
 from django.views import generic
 from django.contrib.auth.models import User
+from django.conf import settings
+
+def to_UTC(date):
+    utc = settings.UTC
+    if utc < 0:
+        date = date - timedelta(hours=abs(utc))
+    elif(utc >= 0):
+        date = date + timedelta(hours=abs(utc))
+    return date
+
+def to_localtime(date):
+    utc = settings.UTC
+    if utc < 0:
+        date = date + timedelta(hours=abs(utc))
+    elif(utc >= 0):
+        date = date - timedelta(hours=abs(utc))
+    return date
 
 def check_device(**kwargs):
 
@@ -57,24 +75,29 @@ def check_data(**kwargs):
 
     return kwargs
 
-class IndexView(generic.ListView):
-    template_name = 'data_index.html'
-    context_object_name = 'latest_data_list'
+class IndexView(generic.DetailView):
+    model = Data
 
-    def get_queryset(self):
-        """Return the last five published devicess."""
-        return Data.objects.order_by('-date')[:5]
+    def get(self, request, *args, **kwargs):
+        """Return all data."""
+        return JsonResponse({'data': list(map(lambda x: x.serialize(), Data.objects.all()))})
 
 class DetailView(generic.DetailView):
     model = Data
-    template_name = 'data_detail.html'
+
+    def get(self, request, *args, **kwargs):
+        """Return the last published data."""
+        try:
+            return JsonResponse({'data': Data.objects.get(id=kwargs["pk"]).serialize()})
+        except Exception as e:
+            print "Some error ocurred getting Single Data with id: " + str(kwargs["pk"])
+            print "Exception: " + str(e)
+            return HttpResponse(status=500)
 
 class DataDayView(generic.DetailView):
     model = Data
 
     def get(self, request, *args, **kwargs):
-        print "kwargs"
-        print kwargs
 
         try:
             data_list = []
@@ -84,20 +107,18 @@ class DataDayView(generic.DetailView):
             year = kwargs["year"]
 
             date_string = day + "-" + month + "-" + year
-            #date = dp.parse(date_string, timezone.now())
+
             date_from = datetime.datetime.strptime(date_string, "%d-%m-%Y").date()
+
+            date_from = to_localtime(date_from) #TODO: Get timezone from country configured by user
             date_to = date_from + timedelta(hours=24)
+
             data_query = Data.objects.all().filter(date__gte=date_from, date__lte=date_to)
             data_query = list(data_query)
 
             for data in data_query:
-                #print data
-                data_dict = {}
-                data_dict["data_value"] = data.data_value
-                data_dict["data_date"] = data.date
-                data_list.insert(0,data_dict)
+                data_list.insert(0,data.serialize())
 
-            #print data_list
             return JsonResponse({'data': data_list})
 
         except Exception as e:
@@ -105,13 +126,10 @@ class DataDayView(generic.DetailView):
             print "Exception: " + str(e)
             return HttpResponse(status=500)
 
-
 class DataMonthView(generic.DetailView):
     model = Data
 
     def get(self, request, *args, **kwargs):
-        print "kwargs"
-        print kwargs
 
         try:
             data_list = []
@@ -129,11 +147,7 @@ class DataMonthView(generic.DetailView):
             data_query = list(data_query)
 
             for data in data_query:
-                #print data
-                data_dict = {}
-                data_dict["data_value"] = data.data_value
-                data_dict["data_date"] = data.date
-                data_list.insert(0,data_dict)
+                data_list.insert(0,data.serialize())
 
             #print data_list
             return JsonResponse({'data': data_list})
@@ -143,12 +157,43 @@ class DataMonthView(generic.DetailView):
             print "Exception: " + str(e)
             return HttpResponse(status=500)
 
+class DataHourView(generic.DetailView):
+    model = Data
+
+    def get(self, request, *args, **kwargs):
+
+        try:
+            data_list = []
+
+            day = kwargs["day"]
+            month = kwargs["month"]
+            year = kwargs["year"]
+            hour = kwargs["hour"]
+
+            datetime_string = day + "-" + month + "-" + year + " " + hour + ":" + "00"
+            #date = dp.parse(date_string, timezone.now())
+            date_from = datetime.datetime.strptime(datetime_string, "%d-%m-%Y %H:%M")
+            date_from = to_localtime(date_from) #TODO: Get timezone from country configured by user
+            date_to = date_from + timedelta(minutes=59)
+
+            data_query = Data.objects.all().filter(date__gte=date_from, date__lte=date_to)
+            data_query = list(data_query)
+
+            for data in data_query:
+                data_list.insert(0,data.serialize())
+
+            #print data_list
+            return JsonResponse({'data': data_list})
+
+        except Exception as e:
+            print "Some error ocurred getting Hour Data"
+            print "Exception: " + str(e)
+            return HttpResponse(status=500)
+
 class DataBetweenDaysView(generic.DetailView):
     model = Data
 
     def get(self, request, *args, **kwargs):
-        print "kwargs"
-        print kwargs
 
         try:
             data_list = []
@@ -172,11 +217,7 @@ class DataBetweenDaysView(generic.DetailView):
             data_query = list(data_query)
 
             for data in data_query:
-                #print data
-                data_dict = {}
-                data_dict["data_value"] = data.data_value
-                data_dict["data_date"] = data.date
-                data_list.insert(0,data_dict)
+                data_list.insert(0,data.serialize())
 
             #print data_list
             return JsonResponse({'data': data_list})

@@ -13,7 +13,23 @@ from .models import Device, DeviceState
 from data.models import Data
 from django.views import generic
 from django.contrib.auth.models import User
+from django.conf import settings
 
+def to_UTC(date):
+    utc = settings.UTC
+    if utc < 0:
+        date = date - timedelta(hours=abs(utc))
+    elif(utc >= 0):
+        date = date + timedelta(hours=abs(utc))
+    return date
+
+def to_localtime(date):
+    utc = settings.UTC
+    if utc < 0:
+        date = date + timedelta(hours=abs(utc))
+    elif(utc >= 0):
+        date = date - timedelta(hours=abs(utc))
+    return date
 
 def check_device(**kwargs):
 
@@ -60,16 +76,23 @@ def check_device_mac(**kwargs):
 
 
 class IndexView(generic.ListView):
-    template_name = 'devices/index.html'
-    context_object_name = 'latest_devices_list'
+    model = Device
 
-    def get_queryset(self):
-        """Return the last five published devices."""
-        return Device.objects.order_by('-created')[:5]
+    def get(self, request, *args, **kwargs):
+        """Return all devices."""
+        return JsonResponse({'devices': list(map(lambda x: x.serialize(), Device.objects.all()))})
 
 class DetailView(generic.DetailView):
     model = Device
-    template_name = 'devices/devices_detail.html'
+
+    def get(self, request, *args, **kwargs):
+        """Return the last published device."""
+        try:
+            return JsonResponse({'device': Device.objects.get(id=kwargs["pk"]).serialize()})
+        except Exception as e:
+            print "Some error ocurred getting Single Device with id: " + str(kwargs["pk"])
+            print "Exception: " + str(e)
+            return HttpResponse(status=500)
 
 class DeviceDataView(generic.DetailView):
     model = Device
@@ -78,16 +101,13 @@ class DeviceDataView(generic.DetailView):
 
         try:
             data_list = []
+            
             device = kwargs["pk"]
             data_query = Data.objects.all().filter(device=device)
             data_query = list(data_query)
 
             for data in data_query:
-                #print data
-                data_dict = {}
-                data_dict["data_value"] = data.data_value
-                data_dict["data_date"] = data.date
-                data_list.insert(0,data_dict)
+                data_list.insert(0,data.serialize())
 
             #print data_list
             return JsonResponse({'data': data_list})
@@ -127,11 +147,7 @@ class DeviceMacDataView(generic.DetailView):
                     data_query = list(data_query)
 
                     for data in data_query:
-                        #print data
-                        data_dict = {}
-                        data_dict["data_value"] = data.data_value
-                        data_dict["data_date"] = data.date
-                        data_list.insert(0,data_dict)
+                        data_list.insert(0,data.serialize())
 
                     #print data_list
                     return JsonResponse({'data': data_list})
@@ -211,8 +227,6 @@ class DeviceDataDayView(generic.DetailView):
     model = Device
 
     def get(self, request, *args, **kwargs):
-        print "kwargs"
-        print kwargs
 
         try:
             data_list = []
@@ -225,17 +239,15 @@ class DeviceDataDayView(generic.DetailView):
             date_string = day + "-" + month + "-" + year
             #date = dp.parse(date_string, timezone.now())
             date_from = datetime.datetime.strptime(date_string, "%d-%m-%Y").date()
-            print date_from
+
+            date_from = to_UTC(date_from) #TODO: Get timezone from country configured by user
             date_to = date_from + timedelta(hours=24)
             data_query = Data.objects.all().filter(device=device, date__gte=date_from, date__lte=date_to)
             data_query = list(data_query)
 
             for data in data_query:
-                #print data
-                data_dict = {}
-                data_dict["data_value"] = data.data_value
-                data_dict["data_date"] = data.date
-                data_list.insert(0,data_dict)
+                data_list.insert(0,data.serialize())
+
 
             #print data_list
             return JsonResponse({'data': data_list})
@@ -249,8 +261,6 @@ class DeviceDataMonthView(generic.DetailView):
     model = Device
 
     def get(self, request, *args, **kwargs):
-        print "kwargs"
-        print kwargs
 
         try:
             data_list = []
@@ -264,17 +274,14 @@ class DeviceDataMonthView(generic.DetailView):
             date_string = day + "-" + month + "-" + year
             #date = dp.parse(date_string, timezone.now())
             date_from = datetime.datetime.strptime(date_string, "%d-%m-%Y").date()
-            print date_from
+
             date_to = date_from + timedelta(days=cant_days_month)
             data_query = Data.objects.all().filter(device=device, date__gte=date_from, date__lte=date_to)
             data_query = list(data_query)
 
             for data in data_query:
-                #print data
-                data_dict = {}
-                data_dict["data_value"] = data.data_value
-                data_dict["data_date"] = data.date
-                data_list.insert(0,data_dict)
+                data_list.insert(0,data.serialize())
+
 
             #print data_list
             return JsonResponse({'data': data_list})
@@ -288,8 +295,6 @@ class DeviceDataBetweenDaysView(generic.DetailView):
     model = Device
 
     def get(self, request, *args, **kwargs):
-        print "kwargs"
-        print kwargs
 
         try:
             data_list = []
@@ -314,11 +319,7 @@ class DeviceDataBetweenDaysView(generic.DetailView):
             data_query = list(data_query)
 
             for data in data_query:
-                #print data
-                data_dict = {}
-                data_dict["data_value"] = data.data_value
-                data_dict["data_date"] = data.date
-                data_list.insert(0,data_dict)
+                data_list.insert(0,data.serialize())
 
             #print data_list
             return JsonResponse({'data': data_list})
@@ -327,6 +328,42 @@ class DeviceDataBetweenDaysView(generic.DetailView):
             print "Some error ocurred getting Between Days Device Data"
             print "Exception: " + str(e)
             return HttpResponse(status=500)
+
+
+class DeviceDataHourView(generic.DetailView):
+    model = Device
+
+    def get(self, request, *args, **kwargs):
+
+        try:
+            data_list = []
+            device = kwargs["pk"]
+
+            day = kwargs["day"]
+            month = kwargs["month"]
+            year = kwargs["year"]
+            hour = kwargs["hour"]
+
+            datetime_string = day + "-" + month + "-" + year + " " + hour + ":" + "00"
+            #date = dp.parse(date_string, timezone.now())
+            date_from = datetime.datetime.strptime(datetime_string, "%d-%m-%Y %H:%M")
+            date_from = to_localtime(date_from) #TODO: Get timezone from country configured by user
+            date_to = date_from + timedelta(minutes=59)
+
+            data_query = Data.objects.all().filter(device=device, date__gte=date_from, date__lte=date_to)
+            data_query = list(data_query)
+
+            for data in data_query:
+                data_list.insert(0,data.serialize())
+
+            #print data_list
+            return JsonResponse({'data': data_list})
+
+        except Exception as e:
+            print "Some error ocurred getting Hour Device Data"
+            print "Exception: " + str(e)
+            return HttpResponse(status=500)
+
 
 class RecognitionView(generic.View):
 

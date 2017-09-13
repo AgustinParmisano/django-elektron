@@ -6,11 +6,9 @@
 
 
 ## Model:
-	- Enviar url por get con dd/mm/yyyy/hh y que devuelva todos los datos para esa hora.
 	- Enviar url por get con devices/device_id/data/dd/mm/yyyy/hh y que devuelva los datos para esa hora par ese device.
 	- Los dos mismos de arriba pero en rango de horas (entre hora y hora) 
 	- Que los datos devueltos en cualquier caso indiquen de que dispositivo son
-	- Solucionar el Warning de dates: RuntimeWarning: DateTimeField Data.date received a naive datetime (2017-09-12 00:00:00) while time zone support is active. 
 	- Solucionar la url, la view y la template para listar data y task de un device elegido por la url 
 	- Crear las vistas (Alta, Baja, Modificación y Listar) y las urls de cada modelo.
 		- Listar: Lograr urls para cada modelo para obtener todos los datos en formato json.

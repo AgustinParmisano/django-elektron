@@ -11,4 +11,5 @@ urlpatterns = [
     url(r'^(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})/$', csrf_exempt(views.DataDayView.as_view()), name='data_day'),
     url(r'^(?P<month>\d{2})/(?P<year>\d{4})/$', csrf_exempt(views.DataMonthView.as_view()), name='data_month'),
     url(r'^(?P<day1>\d{2})/(?P<month1>\d{2})/(?P<year1>\d{4})/(?P<day2>\d{2})/(?P<month2>\d{2})/(?P<year2>\d{4})/$', csrf_exempt(views.DataBetweenDaysView.as_view()), name='data_between_days'),
+    url(r'^(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})/(?P<hour>\d{2})/$', csrf_exempt(views.DataHourView.as_view()), name='data_hour'),
 ]
