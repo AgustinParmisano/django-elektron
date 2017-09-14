@@ -4,9 +4,8 @@
 	- Cuando se arranca el server debe arrancar mqtt y websocket (una sola instancia de c/u)
 	- Se deben crear TaskStates, TaskFunctions y DeviceState por defecto al iniciar el sistema. Ver cuales. 
 
-
 ## Model:
-	- Solucionar la url, la view y la template para listar data y task de un device elegido por la url 
+	- Solucionar la url, la view y la template para listar tasks (datatask o datetimetask) de un device elegido por la url 
 	- Crear las vistas (Alta, Baja, Modificación y Listar) y las urls de cada modelo.
 		- Listar: Lograr urls para cada modelo para obtener todos los datos en formato json.
 		- Alta, Baja Moficicación: Lograr post y get para crear, editar y borrar datos para cada modelo.

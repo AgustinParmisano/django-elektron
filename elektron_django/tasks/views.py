@@ -64,32 +64,85 @@ def check_task(**kwargs):
 
     return kwargs
 
-
 class IndexView(generic.ListView):
-    template_name = 'tasks/index.html'
-    context_object_name = 'latest_tasks_list'
+    model = Task
 
-    def get_queryset(self):
-        """Return the last five published tasks."""
-        return Task.objects.order_by('-created')[:5]
+    def get(self, request, *args, **kwargs):
+        """Return all tasks."""
+        return JsonResponse({'tasks': list(map(lambda x: x.serialize(), Task.objects.all()))})
+
+class DateTimeTaskIndexView(IndexView):
+    model = DateTimeTask
+
+    def get(self, request, *args, **kwargs):
+        """Return all date time tasks."""
+        return JsonResponse({'datetimetasks': list(map(lambda x: x.serialize(), DateTimeTask.objects.all()))})
+
+class DataTaskIndexView(IndexView):
+    model = DataTask
+
+    def get(self, request, *args, **kwargs):
+        """Return all data tasks."""
+        return JsonResponse({'datatasks': list(map(lambda x: x.serialize(), DataTask.objects.all()))})
 
 class DataTaskDetailView(generic.DetailView):
     model = DataTask
-    template_name = 'tasks/datatask_detail.html'
+
+    def get(self, request, *args, **kwargs):
+        """Return the selected by id DataTask."""
+        try:
+            return JsonResponse({'datatasks': DataTask.objects.get(id=kwargs["pk"]).serialize()})
+        except Exception as e:
+            print "Some error ocurred getting Single DataTask with id: " + str(kwargs["pk"])
+            print "Exception: " + str(e)
+            return HttpResponse(status=500)
 
 class DateTimeTaskDetailView(generic.DetailView):
     model = DateTimeTask
-    template_name = 'tasks/datetimetask_detail.html'
 
+    def get(self, request, *args, **kwargs):
+        """Return the selected by id DateTimeTask."""
+        try:
+            return JsonResponse({'datetimetasks': DateTimeTask.objects.get(id=kwargs["pk"]).serialize()})
+        except Exception as e:
+            print "Some error ocurred getting Single DateTimeTask with id: " + str(kwargs["pk"])
+            print "Exception: " + str(e)
+            return HttpResponse(status=500)
 
 class TaskDeviceView(generic.DetailView):
     model = Task
     #template_name = 'task_data.html'
 
     def get(self, request, *args, **kwargs):
-        print "GETDATA"
-        print request.GET
-        return JsonResponse({'status':True})
+
+        result = check_device_mac(**request.GET)
+
+        if result:
+            try:
+                device = Device.objects.get(device_mac=result["device_mac"])
+
+            except Exception as e:
+                print  "Device you ask does not exist"
+                print "Exception: " + str(e)
+                return HttpResponse(status=500)
+
+            if device:
+                try:
+                    task_list = []
+                    task_query = Task.objects.all().filter(device=device)
+                    task_query = list(task_query)
+
+                    for task in task_query:
+                        #print task
+                        task_list.insert(0,task.serialize())
+
+                    #print task_list
+                    return JsonResponse({'task': task_list})
+
+                except Exception as e:
+                    print "Some error ocurred getting Task Device"
+                    print "Exception: " + str(e)
+                    return HttpResponse(status=500)
 
     def post(self, request, *args, **kwargs):
         task = Task()
@@ -122,7 +175,6 @@ class TaskDeviceView(generic.DetailView):
                     print "Some error ocurred getting Task Device"
                     print "Exception: " + str(e)
                     return HttpResponse(status=500)
-
 
 class CreateView(generic.View):
 

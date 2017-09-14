@@ -84,10 +84,10 @@ class DateTimeTask(Task):
     def serialize(self):
         return {
             'id': self.id,
-            'taskstate': self.taskstate.serialize(),
-            'taskfunction': self.taskfunction.serialize(),
             'label': self.label,
             'description': self.description,
+            'taskstate': self.taskstate.serialize(),
+            'taskfunction': self.taskfunction.serialize(),
             'device': self.device.serialize(),
             'date_from': to_UTC(self.date_from),
             'date_to': to_UTC(self.date_to),
@@ -100,11 +100,11 @@ class DataTask(Task):
     def serialize(self):
         return {
             'id': self.id,
-            'taskstate': self.taskstate.serialize(),
-            'taskfunction': self.taskfunction.serialize(),
             'label': self.label,
             'description': self.description,
-            'device': self.device.serialize(),
             'data_value': self.data_value,
+            'taskstate': self.taskstate.serialize(),
+            'taskfunction': self.taskfunction.serialize(),
+            'device': self.device.serialize(),
             'created': to_UTC(self.created),
         }

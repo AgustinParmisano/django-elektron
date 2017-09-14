@@ -86,7 +86,7 @@ class DetailView(generic.DetailView):
     model = Device
 
     def get(self, request, *args, **kwargs):
-        """Return the last published device."""
+        """Return the selected by id device."""
         try:
             return JsonResponse({'device': Device.objects.get(id=kwargs["pk"]).serialize()})
         except Exception as e:
