@@ -109,35 +109,30 @@ class DateTimeTaskDetailView(generic.DetailView):
             print "Exception: " + str(e)
             return HttpResponse(status=500)
 
-class TaskDeviceView(generic.DetailView):
-    model = Task
-    #template_name = 'task_data.html'
+class DatetimeTaskDeviceView(generic.ListView):
 
     def get(self, request, *args, **kwargs):
 
-        result = check_device_mac(**request.GET)
+        result = Device.objects.get(id=kwargs["pk"])
+        device_id = result.serialize()["id"]
 
-        if result:
+        if device_id:
             try:
-                device = Device.objects.get(device_mac=result["device_mac"])
+                tasks = DateTimeTask.objects.all()
 
             except Exception as e:
                 print  "Device you ask does not exist"
                 print "Exception: " + str(e)
+                raise
                 return HttpResponse(status=500)
 
-            if device:
+            if tasks:
                 try:
-                    task_list = []
-                    task_query = Task.objects.all().filter(device=device)
-                    task_query = list(task_query)
 
-                    for task in task_query:
-                        #print task
-                        task_list.insert(0,task.serialize())
+                    task_list = list(tasks)
+                    task_list = ({'task': list(map(lambda x: x.serialize(), tasks))})
 
-                    #print task_list
-                    return JsonResponse({'task': task_list})
+                    return JsonResponse({'device_tasks': task_list})
 
                 except Exception as e:
                     print "Some error ocurred getting Task Device"
@@ -145,36 +140,91 @@ class TaskDeviceView(generic.DetailView):
                     return HttpResponse(status=500)
 
     def post(self, request, *args, **kwargs):
-        task = Task()
 
-        result = check_device_mac(**request.POST)
+        result = Device.objects.get(id=kwargs["pk"])
+        device_id = result.serialize()["id"]
 
-        if result:
+        if device_id:
             try:
-                device = Device.objects.get(device_mac=result["device_mac"])
+                tasks = DateTimeTask.objects.all()
 
             except Exception as e:
                 print  "Device you ask does not exist"
                 print "Exception: " + str(e)
+                raise
                 return HttpResponse(status=500)
 
-            if device:
+            if tasks:
                 try:
-                    task_list = []
-                    task_query = Task.objects.all().filter(device=device)
-                    task_query = list(task_query)
 
-                    for task in task_query:
-                        #print task
-                        task_list.insert(0,task.task_value)
+                    task_list = list(tasks)
+                    task_list = ({'task': list(map(lambda x: x.serialize(), tasks))})
 
-                    #print task_list
-                    return JsonResponse({'task': task_list})
+                    return JsonResponse({'device_tasks': task_list})
 
                 except Exception as e:
                     print "Some error ocurred getting Task Device"
                     print "Exception: " + str(e)
                     return HttpResponse(status=500)
+
+class DataTaskDeviceView(generic.ListView):
+
+    def get(self, request, *args, **kwargs):
+
+        result = Device.objects.get(id=kwargs["pk"])
+        device_id = result.serialize()["id"]
+
+        if device_id:
+            try:
+                tasks = DataTask.objects.all()
+
+            except Exception as e:
+                print  "Device you ask does not exist"
+                print "Exception: " + str(e)
+                raise
+                return HttpResponse(status=500)
+
+            if tasks:
+                try:
+
+                    task_list = list(tasks)
+                    task_list = ({'task': list(map(lambda x: x.serialize(), tasks))})
+
+                    return JsonResponse({'device_tasks': task_list})
+
+                except Exception as e:
+                    print "Some error ocurred getting Task Device"
+                    print "Exception: " + str(e)
+                    return HttpResponse(status=500)
+
+    def post(self, request, *args, **kwargs):
+
+        result = Device.objects.get(id=kwargs["pk"])
+        device_id = result.serialize()["id"]
+
+        if device_id:
+            try:
+                tasks = DataTask.objects.all()
+
+            except Exception as e:
+                print  "Device you ask does not exist"
+                print "Exception: " + str(e)
+                raise
+                return HttpResponse(status=500)
+
+            if tasks:
+                try:
+
+                    task_list = list(tasks)
+                    task_list = ({'task': list(map(lambda x: x.serialize(), tasks))})
+
+                    return JsonResponse({'device_tasks': task_list})
+
+                except Exception as e:
+                    print "Some error ocurred getting Task Device"
+                    print "Exception: " + str(e)
+                    return HttpResponse(status=500)
+
 
 class CreateView(generic.View):
 
