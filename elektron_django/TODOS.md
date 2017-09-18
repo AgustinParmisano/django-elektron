@@ -8,6 +8,7 @@
 	- Crear las vistas (Alta, Baja, Modificación y Listar) y las urls de cada modelo.
 		- Listar: Lograr urls para cada modelo para obtener todos los datos en formato json.
 		- Alta, Baja Moficicación: Lograr post y get para crear, editar y borrar datos para cada modelo.
+			- Modificacion: ver si hacerlo con el alta o hacer otra vista aparte
 	- Lograr todo lo anterior pero con authenticación.
 	- Ver si las tareas son con repeticion por dia o mes, tipo calendar
 

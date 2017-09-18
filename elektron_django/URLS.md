@@ -14,6 +14,9 @@ import requests
     r.text
     r.url
     ```
+    
+  - Update:
+      # TODO
 
   - List Devices:
   ```
@@ -39,6 +42,27 @@ import requests
   - Device <id> Data en un dia especifico (dd/mm/yyyy):
   ```
   r = requests.get("http://localhost:8000/devices/<device_id>/data/dd/mm/yyyy")
+  r.text
+  r.url
+  ```
+
+  - Device <id> Data en un rango de dias especificos (dd/mm/yyyy/dd/mm/yyyy):
+  ```
+  r = requests.get("http://localhost:8000/devices/<device_id>/data/dd1/mm1/yyyy1/dd2/mm2/yyyy2")
+  r.text
+  r.url
+  ```
+
+  - Device <id> Data en una hora de una fechaespecifica (dd/mm/yyyy/hh):
+  ```
+  r = requests.get("http://localhost:8000/devices/<device_id>/data/dd/mm/yyyy/hh")
+  r.text
+  r.url
+  ```
+
+  - Device <id> Data en un rango de fechas especificas (dd/mm/yyyy/hh/dd/mm/yyyy/hh):
+  ```
+  r = requests.get("http://localhost:8000/devices/<device_id>/data/dd1/mm1/yyyy1/hh1/dd2/mm2/yyyy2/hh2")
   r.text
   r.url
   ```
