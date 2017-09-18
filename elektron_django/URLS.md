@@ -4,7 +4,7 @@
 import requests
 ```
 
-## Devices:
+### Devices:
 
   - Create:
     - post:
