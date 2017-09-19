@@ -42,7 +42,7 @@ def check_device(**kwargs):
     else:
         if type(kwargs['label']) is list:
             kwargs['label'] = kwargs['label'][0]
-
+    """
     try:
         kwargs['devicestate'] = DeviceState.objects.get(id=kwargs['devicestate'])
     except Exception as e:
@@ -54,16 +54,16 @@ def check_device(**kwargs):
     except Exception as e:
         #TODO: create default user in settings.py
         kwargs['owner'] = User.objects.get(username="root")
-
+    """
     return kwargs
 
 def check_data(**kwargs):
 
-    if not 'data' in kwargs:
+    if not 'data_value' in kwargs:
         return False
     else:
-        if type(kwargs['data']) is list:
-            kwargs['data'] = kwargs['data'][0]
+        if type(kwargs['data_value']) is list:
+            kwargs['data_value'] = kwargs['data_value'][0]
 
     return kwargs
 
@@ -263,7 +263,7 @@ class CreateView(generic.View):
 
     def post(self, request, *args, **kwargs):
         data = Data()
-        #print request.POST
+
         result = check_device(**request.POST)
 
         if result:
@@ -277,9 +277,9 @@ class CreateView(generic.View):
             if device_enabled:
                 result = check_data(**request.POST)
                 if result:
-                    data.data_value = result["data"]
+                    data.data_value = result["data_value"]
                     data.device = device
-                    #data.date = datetime.datetime.now() #TODO: Device sends real datetime
+                    data.date = datetime.datetime.now() #TODO: Device sends real datetime
                     data.save()
 
         return JsonResponse({'status':True})

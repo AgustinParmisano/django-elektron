@@ -6,11 +6,14 @@
 
 ## Model:
 	- Crear las vistas (Alta, Baja, Modificación y Listar) y las urls de cada modelo.
-		- Listar: Lograr urls para cada modelo para obtener todos los datos en formato json.
-		- Alta, Baja Moficicación: Lograr post y get para crear, editar y borrar datos para cada modelo.
-			- Modificacion: ver si hacerlo con el alta o hacer otra vista aparte
-	- Lograr todo lo anterior pero con authenticación.
+		- Baja para cada modelo (poner la URL en el archivo de URLS.md).
+	- Ver como hacer las tareas automatizadas:
+		- DataTasks (Celery o Cron)
+		- DateTimeTasks (Celery o Cron)
+	- Alta, Baja y Modificacion con authenticación.
 	- Ver si las tareas son con repeticion por dia o mes, tipo calendar
+	- Ver que devolver en cada caso  (error o hit)
+	- Ver como enviar las date_to y la date_from de los datetimestasks
 
 ## Login:
 	- Hacer el login y authenticación.

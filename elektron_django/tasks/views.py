@@ -4,9 +4,11 @@ from __future__ import unicode_literals
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.template import loader
+import datetime
 from .models import Task, DateTimeTask, DataTask, TaskState, TaskFunction
 from devices.models import Device
 from django.views import generic
+from django.contrib.auth.models import User
 
 def check_device_mac(**kwargs):
     if not 'device_mac' in kwargs:
@@ -31,11 +33,39 @@ def check_task(**kwargs):
         if type(kwargs['label']) is list:
             kwargs['label'] = kwargs['label'][0]
 
+    if not 'data_value' in kwargs and not 'date_from' in kwargs and not 'date_to' in kwargs:
+        return False
+    else:
+        if 'data_value' in kwargs and type(kwargs['data_value']) is list:
+            kwargs['data_value'] = kwargs['data_value'][0]
+        elif 'date_from' in kwargs and type(kwargs['date_from']) is list:
+            kwargs['date_from'] = kwargs['date_from'][0]
+        elif 'date_to' in kwargs and type(kwargs['date_to']) is list:
+            kwargs['date_to'] = kwargs['date_to'][0]
+
     if not 'description' in kwargs:
         return False
     else:
         if type(kwargs['description']) is list:
             kwargs['description'] = kwargs['description'][0]
+
+    if not 'taskstate' in kwargs:
+        return False
+    else:
+        if type(kwargs['taskstate']) is list:
+            kwargs['taskstate'] = kwargs['taskstate'][0]
+
+    if not 'taskfunction' in kwargs:
+        return False
+    else:
+        if type(kwargs['taskfunction']) is list:
+            kwargs['taskfunction'] = kwargs['taskfunction'][0]
+
+    if not 'owner' in kwargs:
+        return False
+    else:
+        if type(kwargs['owner']) is list:
+            kwargs['owner'] = kwargs['owner'][0]
 
     try:
         kwargs['taskstate'] = TaskState.objects.get(id=kwargs['taskstate'])
@@ -48,13 +78,6 @@ def check_task(**kwargs):
     except Exception as e:
         #TODO: create default taskfunctions in settings.py
         kwargs['taskfunction'] = TaskFunction.objects.get(name="shutdown")
-
-    try:
-        kwargs['device'] = Device.objects.get(id=kwargs['device'])
-    except Exception as e:
-        raise
-        #TODO: Mensaje de Error: Si no hay devices entonces no se pueden hacer tasks
-        #kwargs['device'] = Device.objects.get(name="Elektron")
 
     try:
         kwargs['owner'] = User.objects.get(username=kwargs['owner'])
@@ -118,7 +141,7 @@ class DatetimeTaskDeviceView(generic.ListView):
 
         if device_id:
             try:
-                tasks = DateTimeTask.objects.all()
+                tasks = DateTimeTask.objects.all().filter(device=device_id)
 
             except Exception as e:
                 print  "Device you ask does not exist"
@@ -176,7 +199,7 @@ class DataTaskDeviceView(generic.ListView):
 
         if device_id:
             try:
-                tasks = DataTask.objects.all()
+                tasks = DateTimeTask.objects.all().filter(device=device_id)
 
             except Exception as e:
                 print  "Device you ask does not exist"
@@ -225,27 +248,122 @@ class DataTaskDeviceView(generic.ListView):
                     print "Exception: " + str(e)
                     return HttpResponse(status=500)
 
-
-class CreateView(generic.View):
+class DataTaskCreateView(generic.View):
 
     def post(self, request, *args, **kwargs):
 
         result = check_device_mac(**request.POST)
-        task_check = check_task(**request.POST)
 
         if result:
-            try:
-                device = Device.objects.get(device_mac=result["device_mac"])
-                task.description = result["description"]
-                task.label = result["label"]
-                task.taskstate = result["taskstate"]
-                task.tasksfunction = result["tasksfunction"]
-                task.device = result["device"]
+            device = Device.objects.get(device_mac=result["device_mac"])
 
+            task = check_task(**request.POST)
 
-            except Task.DoesNotExist:
-                task = Task(**result)
+            if task:
+                try:
+                    datatask = DataTask()
+                    datatask.description = task["description"]
+                    datatask.label = task["label"]
+                    datatask.data_value = task["data_value"]
+                    datatask.taskstate = task["taskstate"]
+                    datatask.taskfunction = task["taskfunction"]
+                    datatask.owner = task["owner"]
+                    datatask.device = device
 
-            task.save()
+                except DataTask.DoesNotExist:
+                    datatask = DataTask(**task)
 
-        return JsonResponse({'status':True})
+                datatask.save()
+
+            return JsonResponse({'status':True})
+
+class DataTaskUpdateView(generic.View):
+
+    def post(self, request, *args, **kwargs):
+
+        result = check_device_mac(**request.POST)
+
+        if result:
+            device = Device.objects.get(device_mac=result["device_mac"])
+
+            task = check_task(**request.POST)
+
+            if task:
+                try:
+                    datatask = DataTask(pk=kwargs['pk'])
+                    datatask.description = task["description"]
+                    datatask.label = task["label"]
+                    datatask.data_value = task["data_value"]
+                    datatask.taskstate = task["taskstate"]
+                    datatask.taskfunction = task["taskfunction"]
+                    datatask.owner = task["owner"]
+                    datatask.device = device
+                    datatask.created = datetime.datetime.now()
+
+                except Task.DoesNotExist:
+                    datatask = DataTask(**task)
+
+                datatask.save()
+
+            return JsonResponse({'status':True})
+
+class DateTimeTaskCreateView(generic.View):
+
+    def post(self, request, *args, **kwargs):
+
+        result = check_device_mac(**request.POST)
+
+        if result:
+            device = Device.objects.get(device_mac=result["device_mac"])
+
+            task = check_task(**request.POST)
+            print task
+
+            if task:
+                try:
+                    datetimetask = DateTimeTask()
+                    datetimetask.description = task["description"]
+                    datetimetask.label = task["label"]
+                    datetimetask.taskstate = task["taskstate"]
+                    datetimetask.taskfunction = task["taskfunction"]
+                    datetimetask.date_to = task["date_to"]
+                    datetimetask.date_from = task["date_from"]
+                    datetimetask.owner = task["owner"]
+                    datetimetask.device = device
+
+                except DateTimeTask.DoesNotExist:
+                    datetimetask = DateTimeTask(**task)
+
+                datetimetask.save()
+
+            return JsonResponse({'status':True})
+
+class DateTimeTaskUpdateView(generic.View):
+
+    def post(self, request, *args, **kwargs):
+
+        result = check_device_mac(**request.POST)
+
+        if result:
+            device = Device.objects.get(device_mac=result["device_mac"])
+
+            task = check_task(**request.POST)
+
+            if task:
+                try:
+                    datetimetask = DateTimeTask()
+                    datetimetask.description = task["description"]
+                    datetimetask.label = task["label"]
+                    datetimetask.taskstate = task["taskstate"]
+                    datetimetask.taskfunction = task["taskfunction"]
+                    datetimetask.date_to = task["date_to"]
+                    datetimetask.date_from = task["date_from"]
+                    datetimetask.owner = task["owner"]
+                    datetimetask.device = device
+
+                except DateTimeTask.DoesNotExist:
+                    datetimetask = DateTimeTask(**task)
+
+                datetimetask.save()
+
+            return JsonResponse({'status':True})

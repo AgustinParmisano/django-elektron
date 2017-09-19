@@ -51,12 +51,24 @@ def check_device(**kwargs):
         if type(kwargs['label']) is list:
             kwargs['label'] = kwargs['label'][0]
 
+    if not 'devicestate' in kwargs:
+        return False
+    else:
+        if type(kwargs['devicestate']) is list:
+            kwargs['devicestate'] = kwargs['devicestate'][0]
+
+    if not 'owner' in kwargs:
+        return False
+    else:
+        if type(kwargs['owner']) is list:
+            kwargs['owner'] = kwargs['owner'][0]
+
     try:
-        kwargs['devicestate'] = DeviceState.objects.get(id=kwargs['devicestate'])
+        kwargs['devicestate'] = DeviceState.objects.get(pk=kwargs['devicestate'])
     except Exception as e:
         #TODO: create default devicestates in settings.py
         kwargs['devicestate'] = DeviceState.objects.get(name="off")
-
+        raise
     try:
         kwargs['owner'] = User.objects.get(username=kwargs['owner'])
     except Exception as e:
@@ -447,6 +459,27 @@ class CreateView(generic.View):
                 device.label = result["label"]
                 device.devicestate = result["devicestate"]
 
+
+            except Device.DoesNotExist:
+                device = Device(**result)
+
+            device.save()
+
+        return JsonResponse({'status':True})
+
+
+class UpdateView(generic.View):
+
+    def post(self, request, *args, **kwargs):
+
+        result = check_device(**request.POST)
+
+        if result:
+            try:
+                device = Device.objects.get(device_mac=result["device_mac"])
+                device.device_ip = result["device_ip"]
+                device.label = result["label"]
+                device.devicestate = result["devicestate"]
 
             except Device.DoesNotExist:
                 device = Device(**result)
