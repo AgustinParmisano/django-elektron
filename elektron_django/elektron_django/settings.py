@@ -25,7 +25,7 @@ SECRET_KEY = 'jsi%32czm&u0^mf0)2&8%im#vjpy@%^$thp@1wmkzt+v+j5)kb'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'devices.apps.DevicesConfig',
     'data.apps.DataConfig',
     'tasks.apps.TasksConfig',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -50,6 +51,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'elektron_django.urls'
@@ -123,3 +127,11 @@ UTC = -3
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+
+#CORSORIGIN
+CORS_ORIGIN_ALLOW_ALL = True #
+
+CORS_ORIGIN_WHITELIST = (
+    'frontend.algargar.com',
+    'otrositio.example.com'
+)
