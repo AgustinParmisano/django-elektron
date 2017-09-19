@@ -1,5 +1,9 @@
 # TODOS Django Elektron:
 
+## Server:
+	- Poner el servidor andando en wiroos y ver si funciona desde cualquier parte
+
+
 ## Inicio / Settings.py:
 	- Cuando se arranca el server debe arrancar mqtt y websocket (una sola instancia de c/u)
 	- Se deben crear TaskStates, TaskFunctions y DeviceState por defecto al iniciar el sistema. Ver cuales.
