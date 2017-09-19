@@ -1,8 +1,9 @@
 # TODOS Django Elektron:
 
 ## Server:
-	- Poner el servidor andando en wiroos y ver si funciona desde cualquier parte
-
+	- Ver si el servidor es propenso a caerse y poner algo que lo levante solo.
+	- Ver como interactua mqtt con el servidor remoto
+	- Ver como interactua websocket con el servidor remoto
 
 ## Inicio / Settings.py:
 	- Cuando se arranca el server debe arrancar mqtt y websocket (una sola instancia de c/u)
@@ -47,3 +48,10 @@
 		- Paso a estado de conección
 		- Posibilidad de reconfiguración de SSID, PASS e IP del server
 		- Web del server AP con css bien hecha
+
+## Seguridad:
+	### Server:
+		- Tener cuidado con CORS
+		- Tener cuidado con mqtt
+		- Tener cuidado con websocket
+		- Tener cuidado con encriptacion desde nodemcu
